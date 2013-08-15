@@ -20,5 +20,5 @@ levels.each |val|
         log "test message with level ""#{val}" do
                level :#{val}
         end
-
+end
 
