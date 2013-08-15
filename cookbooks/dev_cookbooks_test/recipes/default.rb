@@ -7,8 +7,19 @@
 # All rights reserved - Do Not Redistribute
 #
 
-git "/tmp/right_link" do
-  repository "https://github.com/rightscale/right_link.git"
-  reference "master"
-  action :sync
-end
+#git "/tmp/right_link" do
+#  repository "https://github.com/rightscale/right_link.git"
+#  reference "master"
+#  action :sync
+#end
+
+levels = Array.new
+levels = ["info","debug", "warn", "fatal", "error"]
+
+levels.each_with_index { |val, index| 
+        log "test message with level ""#{val}" do
+               level :#{val}
+        end
+}
+
+
