@@ -22,5 +22,3 @@ levels.each do |val|
         end
 end
 
-
-

@@ -16,11 +16,19 @@
 levels = Array.new
 levels = ["info","debug", "warn", "fatal", "error"]
 
+<<<<<<< HEAD
 levels.each do |val|
         log "test message with level #{val}" do
-               level :#{val}
+               level val.to_sym
         end
 end
 
 
+=======
+levels.each |val| 
+        log "test message with level ""#{val}" do
+               level :#{val}
+        end
+end
+>>>>>>> 7f3af4f267719083144b8374251f92641c97fbe4
 
