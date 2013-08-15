@@ -16,10 +16,11 @@
 levels = Array.new
 levels = ["info","debug", "warn", "fatal", "error"]
 
-levels.each_with_index { |val, index| 
-        log "test message with level ""#{val}" do
-               level :#{val}
+levels.each do |val|
+        log "test message with level #{val}" do
+               level val.to_sym
         end
-}
+end
+
 
 
