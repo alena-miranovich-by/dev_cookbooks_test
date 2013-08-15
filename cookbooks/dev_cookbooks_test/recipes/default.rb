@@ -16,10 +16,9 @@
 levels = Array.new
 levels = ["info","debug", "warn", "fatal", "error"]
 
-levels.each_with_index { |val, index| 
+levels.each |val| 
         log "test message with level ""#{val}" do
                level :#{val}
         end
-}
 
 
