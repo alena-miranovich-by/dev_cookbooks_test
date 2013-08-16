@@ -26,7 +26,3 @@ levels.each do |val|
        		 end
 	end
 end
-system "echo 'just trying to use Chef log'"
-levels.each do |val|
-	Chef::Log.val.to_sym "New test-message with #{val} level"
-end
