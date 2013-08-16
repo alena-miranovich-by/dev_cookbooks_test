@@ -17,8 +17,16 @@ levels = Array.new
 levels = ["info","debug", "warn", "fatal", "error"]
 
 levels.each do |val|
-        log "test message with level #{val}" do
-               level val.to_sym
-        end
+	system "echo 'Setting #{val} level to cookbooks...'"
+	system "rs_log_level -l #{val}"
+	system "echo 'level was set'"
+	levels.each do |val|
+        	log "test message with level #{val}" do
+               		level val.to_sym
+       		 end
+	end
 end
-
+system "echo 'just trying to use Chef log'"
+levels.each do |val|
+	Chef::Log.val.to_sym "New test-message with #{val} level"
+end
