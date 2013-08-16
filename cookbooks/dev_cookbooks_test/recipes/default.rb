@@ -17,12 +17,7 @@ levels = Array.new
 levels = ["info","debug", "warn", "fatal", "error"]
 
 levels.each do |val|
-	system "echo 'Setting #{val} level to cookbooks...'"
-	system "rs_log_level -l #{val}"
-	system "echo 'level was set'"
-	levels.each do |val|
-        	log "test message with level #{val}" do
-               		level val.to_sym
-       		 end
-	end
+       	log "test message with level #{val}" do
+          	level val.to_sym
+       	 end
 end
