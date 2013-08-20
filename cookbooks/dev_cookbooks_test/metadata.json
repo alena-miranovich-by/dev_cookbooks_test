@@ -24,7 +24,8 @@
   "groupings": {
   },
   "recipes": {
-    "dev_cookbooks_test::default": "test"
+    "dev_cookbooks_test::default": "test",
+    "dev_cookbooks_test::check_log_level": "test"
   },
   "version": "0.1.0"
 }
