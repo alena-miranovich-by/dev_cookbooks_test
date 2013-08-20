@@ -1,5 +1,11 @@
-#!/usr/bin/ruby
-levels = ["info","debug", "warn", "fatal", "error"]
+#
+# Cookbook Name:: dev_cookbooks_test
+# Recipe:: default
+#
+# Copyright 2013, YOUR_COMPANY_NAME
+#
+# All rights reserved - Do Not Redistribute
+#
 
 #verification of setting cookbook log level
 #cookbook_fail=0
