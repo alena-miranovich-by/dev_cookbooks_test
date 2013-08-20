@@ -1,0 +1,15 @@
+#!/usr/bin/ruby
+levels = Array.new
+levels = ["info","debug", "warn", "fatal", "error"]
+
+puts "hello"
+
+levels.each do |val|
+	puts "#{val}"
+end
+
+system "ls -la"
+system "echo 'tilitili'"
+
+system "echo 'hello world' | grep 'world'"
+
