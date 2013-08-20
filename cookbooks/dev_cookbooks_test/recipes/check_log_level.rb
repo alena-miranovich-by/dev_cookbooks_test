@@ -10,6 +10,7 @@
 #verification of setting cookbook log level
 #cookbook_fail=0
 #agent_fail=0
+levels = ["info", "debug", "warn", "error", "fatal"]
 levels.each do |val|
         system "rs_log_level -l #{val}"
         system "rs_log_level | grep -i #{val}"
