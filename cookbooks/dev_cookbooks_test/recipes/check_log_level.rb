@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: dev_cookbooks_test
-# Recipe:: default
+# Recipe:: check_cookbook_and_agent_log_levels
 #
 # Copyright 2013, YOUR_COMPANY_NAME
 #
