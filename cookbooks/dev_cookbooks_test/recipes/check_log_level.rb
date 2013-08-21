@@ -38,15 +38,15 @@ levels.each do |val|
 		system "echo '===PASS=== cookbook'"
         else
                 puts "===FAIL=== cookbook log hasn't been set"
-		systen "echo '==fail==cookbook'"
+		system "echo '==fail==cookbook'"
 #               cookbook_fails += 1
 #	        exit 101
         end
 	#check logging process:
-	levels.each do |level|
-		puts "#{level}"
-		log "test-message to verify logging with #{val} cookbook level and #{level} log level" do
-			level val1.to_sym
+	levels.each do |lvl|
+		puts "#{lvl}"
+		log "test-message to verify logging with #{val} cookbook level and #{lvl} log level" do
+			level lvl.to_sym
 		end
 	end
 	for path in '/var/log/messages' '/var/log/syslog' 
