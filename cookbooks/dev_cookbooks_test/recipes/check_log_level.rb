@@ -12,7 +12,7 @@
 #agent_fail=0
 levels = ["info", "debug", "warn", "error", "fatal"]
 array = ["debug", "info","warn", "error", "fatal"]
-data_to_verify=["test_message_with_info_cookbook_and_info_log_level",
+msg = ["test_message_with_info_cookbook_and_info_log_level",
                 "test_message_with_info_cookbook_and_warn_log_level",
                 "test_message_with_info_cookbook_and_error_log_level",
                 "test_message_with_info_cookbook_and_fatal_log_level",
@@ -28,55 +28,11 @@ data_to_verify=["test_message_with_info_cookbook_and_info_log_level",
                 "test_message_with_error_cookbook_and_fatal_log_level",
                 "test_message_with_error_cookbook_and_error_log_level"]
 
+levels.each do |lvl|
 
-#check cookbook log level and logging process
-levels.each do |val|
-	system "rs_log_level -l #{val}"
-	system "rs_log_level | grep -i #{val}"
-	if $? == 0
-		system "echo '===PASS=== cookbook set'"
-        else
-		system "echo '===FAIL=== cookbook not set'"
-        end
-	#check logging process:
-
-	array.each do |lvl|
-		log "test_message_with_#{val}_cookbook_and_#{lvl}_log_level" do
-			level lvl.to_sym
+	array.each do |val|
+		log "test_message_with_#{lvl}_cookbool_level_and_#{val}_log_level" do
+			level val.to_sym
 		end
 	end
 end
-	for path in '/var/log/messages' #'/var/log/syslog' 
-		for msg in data_to_verify
-#			puts "#{msg}"
-			system "cat #{path} | grep #{msg}"
-			if $? == 0
-				system "echo '==PASS=  exists'"
-			else 
-				system "echo '==FAIL== doesn't exist'"
-			end
-		end	
-	end
-#end
-
-#check agent log level 
-#levels.each do |val|
-#        system "rs_log_level --agent -l #{val}"
-#        system "rs_log_level --agent | grep -i #{val}"
-#        if $? == 0
-#                puts "===PASS=== agent log level set successfully"
-#        else
-#                puts "===FAIL=== agent log level hasn't been set"
-#                agent_fail += 1
-#		exit 102
-#        end
-#end
-#if cookbook_fail > 1 && agent_fail > 1
-#        puts "===PASS=== log_levels works correctly"
-#else
-#        puts "===FAIL=== log_levels not working correctly"
-#        puts "cookbook fails - #{cookbook_fail}"
-#        puts "agent fails - #{agent_fail}"
-#        exit 100
-#end
-
