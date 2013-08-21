@@ -11,13 +11,9 @@
 #cookbook_fail=0
 #agent_fail=0
 levels = ["info", "debug", "warn", "error", "fatal"]
-array = ["debug", "info","warn", "error", "fatal"]
 
-levels.each do |lvl|
-
-	array.each do |val|
-		log "test_message_with_#{lvl}_cookbook_level_and_#{val}_log_level" do
-			level val.to_sym
-		end
+levels.each do |val|
+	log "test_msg with cookbook level #{val}" do
+		level val.to_sym
 	end
 end
