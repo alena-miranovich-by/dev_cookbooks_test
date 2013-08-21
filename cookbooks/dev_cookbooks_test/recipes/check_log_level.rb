@@ -50,17 +50,17 @@ levels.each do |val|
 			level lvl.to_sym
 		end
 	end
-	for path in '/var/log/messages' #'/var/log/syslog' 
-		for msg in data_to_verify
-			puts "#{msg}"
-			system "cat #{path} | grep #{msg}"
-			if $? == 0
-				system "echo '==PASS=  exists'"
-			else 
-				system "echo '==FAIL== doesn't exist'"
-			end
-		end	
-	end
+#	for path in '/var/log/messages' #'/var/log/syslog' 
+#		for msg in data_to_verify
+#			puts "#{msg}"
+#			system "cat #{path} | grep #{msg}"
+#			if $? == 0
+#				system "echo '==PASS=  exists'"
+#			else 
+#				system "echo '==FAIL== doesn't exist'"
+#			end
+#		end	
+#	end
 end
 
 #check agent log level 
