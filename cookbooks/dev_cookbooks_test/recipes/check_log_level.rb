@@ -11,7 +11,7 @@
 #cookbook_fail=0
 #agent_fail=0
 levels = ["info", "debug", "warn", "error", "fatal"]
-
+array = ["debug", "info","warn", "error", "fatal"]
 data_to_verify=["test_message_with_info_cookbook_and_info_log_level",
                 "test_message_with_info_cookbook_and_warn_log_level",
                 "test_message_with_info_cookbook_and_error_log_level",
@@ -40,7 +40,7 @@ levels.each do |val|
         end
 	#check logging process:
 
-	levels.each do |lvl|
+	array.each do |lvl|
 		log "test_message_with_#{val}_cookbook_and_#{lvl}_log_level" do
 			level lvl.to_sym
 		end
