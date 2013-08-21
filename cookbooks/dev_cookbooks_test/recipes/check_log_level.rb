@@ -50,7 +50,7 @@ levels.each do |val|
 			level lvl.to_sym
 		end
 	end
-	for path in 'test' #'/var/log/messages' #'/var/log/syslog' 
+	for path in '/var/log/messages' #'/var/log/syslog' 
 		for msg in data_to_verify
 			puts "#{msg}"
 			system "cat #{path} | grep #{msg}"
