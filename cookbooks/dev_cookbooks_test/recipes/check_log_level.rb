@@ -46,7 +46,7 @@ levels.each do |val|
 
 	levels.each do |lvl|
 		puts "#{lvl}"
-		log "test-message to verify logging with #{val} cookbook level and #{lvl} log level" do
+		log "test_message_with_#{val}_cookbook_and_#{lvl}_log_level" do
 			level lvl.to_sym
 		end
 	end
