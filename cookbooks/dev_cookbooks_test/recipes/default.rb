@@ -22,6 +22,8 @@ ruby_block "check rs_tag --query functionality" do
 			vers = `rs_tag --version`
       if (vers.include? '6.')
         rightlink_version = '6.'
+      else
+        rightlink_version = '5.'
       end 
 
     end
