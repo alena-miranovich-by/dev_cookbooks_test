@@ -22,7 +22,7 @@ ruby_block "check rs_tag --query functionality" do
       puts result
 
       if (result.include? expected_output)
-        chef::Log.info("5.9 cool")
+        Chef::Log.info("5.9 cool")
       else
         Chef::Log.info("5.9 not cool")
       end
