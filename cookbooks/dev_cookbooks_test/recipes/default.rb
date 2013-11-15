@@ -12,49 +12,53 @@ ruby_block "check rs_tag --query functionality" do
   block do
     tag1 = "user:name=tester"
     tag2 = "test-tag with spaces"
-    tag3 = "test-tag_without_ispaces"
+    tag3 = "test-tag_without_spaces"
     tag4 = "hello:world=hello everyone"
     unless node[:platform] == 'windows'
       # Linux
       rightlink_version = `cat /etc/rightscale.d/rightscale-release`
     else 
       # Windows
-      rightlink_version = "" 
+			vers = `rs_tag --version`
+      if (vers.include? '6.')
+        rightlink_version = '6.'
+      end 
+
     end
 
-    if (rightlink_version.include? '6.0')
+    if (rightlink_version.include? '6.')
 
       expected_output = ':tags=>["user:name=tester", "test-tag with spaces", "test-tag_without_spaces", "hello:world=hello everyone"]'
 
-      result =`rs_tag --query #{tag1} '#{tag2}' #{tag3} '#{tag4}' -v`
+      result =`rs_tag --query #{tag1} "#{tag2}" #{tag3} "#{tag4}" -v`
       puts result
 
       if (result.include? expected_output)
 
-        Chef::Log.info("RightLink6.0 rs_tag works as expected. See output: \n #{result}")
+        Chef::Log.info("RightLink6 rs_tag works as expected. See output: \n #{result}")
 
       else
 
-        Chef::Log.info("RightLink6.0 rs_tag doesn't work correctly. See output: \n #{result}")
+        Chef::Log.info("RightLink6 rs_tag doesn't work correctly. See output: \n #{result}")
         fail("Actual rs_tag --query output doesn't match to expected")
 
       end
 
-    elsif (rightlink_version.include? '5.9') 
+    else
 
       # rightlink is not 6.0
       expected_output = ':tags=>["user:name=tester", "test-tag", "with", "spaces", "test-tag_without_spaces", "hello:world=hello", "everyone"]'
 
-      result =`rs_tag --query '#{tag1} #{tag2} #{tag3} #{tag4}' -v`
+      result =`rs_tag --query "#{tag1} #{tag2} #{tag3} #{tag4}" -v`
       puts result
 
       if (result.include? expected_output)
 
-        Chef::Log.info("RightLink5.9 rs_tag works as expected. See output: \n #{result}")
+        Chef::Log.info("RightLink5 rs_tag works as expected. See output: \n #{result}")
 
       else
 
-        Chef::Log.info("RightLink5.9 rs_tag doesn't work correctly. See output: \n #{result}")
+        Chef::Log.info("RightLink5 rs_tag doesn't work correctly. See output: \n #{result}")
         fail("Actual rs_tag --query output doesn't match to expected.")
 
       end
