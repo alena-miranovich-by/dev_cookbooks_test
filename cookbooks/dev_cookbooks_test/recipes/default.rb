@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: rightlink_test
-# Recipe:: 
+# Recipe:: rs_tag_query_check
 #
 # Copyright RightScale, Inc. All rights reserved.  All access and use subject to the
 # RightScale Terms of Service available at http://www.rightscale.com/terms.php and,
@@ -12,44 +12,55 @@ ruby_block "check rs_tag --query functionality" do
   block do
     tag1 = "user:name=tester"
     tag2 = "test-tag with spaces"
-    tag3 = "test-tag_without_spaces"
+    tag3 = "test-tag_without_ispaces"
+    tag4 = "hello:world=hello everyone"
     unless node[:platform] == 'windows'
-    #linux
-    rightlink_version = `cat /etc/rightscale.d/rightscale-release`
-    if (rightlink_version.include? '5.9')
-      expected_output = ':tags=>["user:name=tester", "test-tag", "with", "spaces", "test-tag_without_spaces"'
-      result =`rs_tag --query '#{tag1} #{tag2} #{tag3}' -v`
-      puts result
-
-      if (result.include? expected_output)
-        Chef::Log.info("5.9 cool")
-      else
-        Chef::Log.info("5.9 not cool")
-      end
-    elsif (rightlink_version.include? '6.0')
-      expected_output = ':tags=>["user:name=tester", "test-tag with spaces", "test-tag_without_spaces"'
-      result =`rs_tag --query #{tag1} '#{tag2}' #{tag3} -v`
-      puts result
-
-      if (result.include? expected_output)
-        Chef::Log.info("6.0 cool")
-      else
-        Chef::Log.info("6.0 not cool")
-      end
+      # Linux
+      rightlink_version = `cat /etc/rightscale.d/rightscale-release`
+    else 
+      # Windows
+      rightlink_version = "" 
     end
-    else
-   #windows
-      expected_output = ':tags=>["user:name=tester", "test-tag", "with", "spaces", "test-tag_without_spaces"'
-      result =`rs_tag --query '#{tag1} #{tag2} #{tag3}' -v`
+
+    if (rightlink_version.include? '6.0')
+
+      expected_output = ':tags=>["user:name=tester", "test-tag with spaces", "test-tag_without_spaces", "hello:world=hello everyone"]'
+
+      result =`rs_tag --query #{tag1} '#{tag2}' #{tag3} '#{tag4}' -v`
       puts result
 
       if (result.include? expected_output)
-        Chef::Log.info("windows 5.9 cool")
+
+        Chef::Log.info("RightLink6.0 rs_tag works as expected. See output: \n #{result}")
+
       else
-        Chef::Log.info("windows 5.9 not cool")
+
+        Chef::Log.info("RightLink6.0 rs_tag doesn't work correctly. See output: \n #{result}")
+        fail("Actual rs_tag --query output doesn't match to expected")
+
+      end
+
+    elsif (rightlink_version.include? '5.9') 
+
+      # rightlink is not 6.0
+      expected_output = ':tags=>["user:name=tester", "test-tag", "with", "spaces", "test-tag_without_spaces", "hello:world=hello", "everyone"]'
+
+      result =`rs_tag --query '#{tag1} #{tag2} #{tag3} #{tag4}' -v`
+      puts result
+
+      if (result.include? expected_output)
+
+        Chef::Log.info("RightLink5.9 rs_tag works as expected. See output: \n #{result}")
+
+      else
+
+        Chef::Log.info("RightLink5.9 rs_tag doesn't work correctly. See output: \n #{result}")
+        fail("Actual rs_tag --query output doesn't match to expected.")
+
       end
 
     end
+
   end
 end
 
