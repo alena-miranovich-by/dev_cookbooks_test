@@ -7,7 +7,13 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 #
 
-# Check that chef is not using sandboxed ruby -- this is fixed by our custom ruby provider
+# Check that  rs_tag --query works as expected:
+# (1) for RightLink 5.9 (and <) - tag_list parameter should be quoted if it contains spaces, 
+# no possibility to use tag with spaces in value;
+# (2) for RightLink 6.0 - instead of the previous tag_list user should provide array if tags, 
+# if any tag contains spaces it should be quoted.
+#
+
 ruby_block "check rs_tag --query functionality" do
   block do
     tag1 = "user:name=tester"
