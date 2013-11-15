@@ -20,12 +20,13 @@ ruby_block "check rs_tag --query functionality" do
     else 
       # Windows
 			vers = `rs_tag --version`
+      Chef::Log.info("#{vers}")
       if (vers.include? '6.')
         rightlink_version = '6.'
       else
         rightlink_version = '5.'
       end 
-
+      Chef::Log.info("#{rightlink_version}")
     end
 
     if (rightlink_version.include? '6.')
