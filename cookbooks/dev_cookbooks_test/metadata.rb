@@ -15,7 +15,6 @@ attribute "ssh_test/ssh_public_key_expected",
   :description => "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
   :recipes => [ "rightlink_test::ssh_test_vscale" ],
   :default => "false",
-  :type => "string",
-  :required => "required"
+  :type => "string"
 
 
