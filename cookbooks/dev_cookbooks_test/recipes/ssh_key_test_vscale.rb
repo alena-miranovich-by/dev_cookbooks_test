@@ -18,9 +18,7 @@ ruby_block "Verify that ssh-key exists in authorized_keys" do
 		# Check input: if it's false - to not run recipe at all"
     if test_state == 'false'
       Chef::Log.info "Will not run test-case, because of input is set to false"
-      exit 0
-    end
-
+    else 
     # Get the ssh-key defined in meta-data file
     metadata_hash = Hash[File.read(metadata).split("\n").map{|i| i.split("=")}]
 
@@ -44,6 +42,7 @@ ruby_block "Verify that ssh-key exists in authorized_keys" do
     else 
       Chef::Log.error "=== FAIL === vScale ssh-key doesn't exist in #{auth_keys} file!"
       exit 102
+    end
     end
 
   end
