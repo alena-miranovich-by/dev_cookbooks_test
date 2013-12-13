@@ -8,12 +8,12 @@ version          '0.2.0'
 
 recipe "dev_cookbooks_test::default", "test"
 recipe "dev_cookbooks_test::check_log_level", "test"
-recipe "rightlink_test::ssh_test_vscale", "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file"
+recipe "dev_cookbooks_test::ssh_test_vscale", "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file"
 
 attribute "ssh_test/ssh_public_key_expected",
   :display_name => "Input ssh_public_key expected",
   :description => "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
-  :recipes => [ "rightlink_test::ssh_test_vscale" ],
+  :recipes => [ "dev_cookbooks_test::ssh_test_vscale" ],
   :default => "false",
   :type => "string"
 
