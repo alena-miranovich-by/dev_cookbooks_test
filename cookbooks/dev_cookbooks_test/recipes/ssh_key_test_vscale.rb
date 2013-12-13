@@ -18,7 +18,7 @@ ruby_block "Verify that ssh-key exists in authorized_keys" do
 		# Check input: if it's false - to not run recipe at all"
     if test_state == 'false'
       Chef::Log.info "Will not run test-case, because of input is set to false"
-      exit 1
+      exit 0
     end
 
     # Get the ssh-key defined in meta-data file
