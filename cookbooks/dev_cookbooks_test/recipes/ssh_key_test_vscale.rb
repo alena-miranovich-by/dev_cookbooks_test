@@ -13,6 +13,7 @@ auth_keys  = "/root/.ssh/authorized_keys"
 vscale_key = "VS_SSH_PUBLIC_KEY" 
 test_state = node[:ssh_test][:ssh_public_key_expected]
 
+unless node[:platform] == 'windows'
 ruby_block "Verify that ssh-key exists in authorized_keys" do
   block do
 		# Check input: if it's false - to not run recipe at all"
@@ -44,7 +45,8 @@ ruby_block "Verify that ssh-key exists in authorized_keys" do
       exit 102
     end
     #end
-    not_if do test_state == 'false' end
+  end   
+  not_if do test_state == 'false' end
 
-  end
+end
 end
