@@ -19,13 +19,17 @@ ruby_block "verify private_ip is private and public_ip is public" do
       if public_ipv4 =~ private_regexp
         Chef::Log.error "=== FAIL === Public IP #{public_ipv4} is private."
         exit 101
+      else 
+        Chef::Log.info "=== PASS === Public IP #{public_ipv4} is public."
       end
       unless private_ipv4 =~ private_regexp
         Chef::Log.error "=== FAIL === Private IP #{private_ipv4} is not private."
         exit 102
+      else
+        Chef::Log.info "=== PASS == Private IP #{provate_ipv4} is private."
       end
     else
-      public_ipv4.nil? ? Chef::Log.info("Public IP is null") : Chef::Log.info("Private IP is null")
+      public_ipv4.nil? ? fail("Public IP is null") : fail("Private IP is null")
     end
   end
 end
