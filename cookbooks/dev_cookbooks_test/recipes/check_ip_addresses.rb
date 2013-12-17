@@ -25,7 +25,7 @@ ruby_block "verify private_ip is private and public_ip is public" do
         exit 102
       end
     else
-      public_ipv4.nil? ? Chef::Log.info "Public IP is null" : Chef::Log.info "Private IP is null"
+      public_ipv4.nil? ? Chef::Log.info("Public IP is null") : Chef::Log.info("Private IP is null")
     end
   end
 end
