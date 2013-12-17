@@ -8,6 +8,7 @@
 #
 # Verifies that sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorized_keys file
 
+require '/var/spool/cloud/meta-data'
 metadata   = "/var/spool/cloud/meta-data.dict"
 auth_keys  = "/root/.ssh/authorized_keys"
 vscale_key = "VS_SSH_PUBLIC_KEY" 
@@ -36,7 +37,9 @@ ruby_block "Verify that ssh-key exists in authorized_keys" do
   #  end
 
    # Chef::Log.info "SSH_KEY for test purposes: #{ssh_key}"
-
+   if  ENV.key?("VS_SSH_PUBLIC_KEY") 
+     ssh_key = ENV.key("VS_SSH_PUBLIC_KEY")
+   end
     # Check that founded ssh_key exists in authorized_keys file
     if File.open(auth_keys, 'r').lines.any?{|line| line.include?("#{ssh_key}")}
       Chef::Log.info "=== PASSED === vScale ssh-key exists in #{auth_keys} and verified with #{metadata}."
