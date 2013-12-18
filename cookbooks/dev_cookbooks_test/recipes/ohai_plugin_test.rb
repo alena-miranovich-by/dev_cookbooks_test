@@ -15,14 +15,14 @@
 # where there is only one network adapter. 
 #
 
-template_path = ::File.join(::Dir.tmpdir, "ohai_values.log")
-template "/tmp/ohai_values.log" do
-  path template_path
-  source "ohai_values.erb"
-  action :create
-end
+#template_path = ::File.join(::Dir.tmpdir, "ohai_values.log")
+#template "/tmp/ohai_values.log" do
+#  path template_path
+#  source "ohai_values.erb"
+#  action :create
+#end
 
-output_file template_path
+#output_file template_path
 
 # Check that chef is not using sandboxed ruby -- this is fixed by our custom ruby provider
 ruby_block "ruby_bin should not point to sandbox" do
@@ -53,7 +53,7 @@ ruby_block "cloud plugins should not be null" do
    # There is a chase where the OS and provider will not return an IP
    # This is a reminder to come back and add this check.
    provider = node[:cloud][:provider]
-   platform = node[:platform]
+   #platform = node[:platform]
    platform_version = node[:platform_version]
    public_ipv4 = node[:cloud][:public_ipv4] #v5.8 only and cloud dependant
    public_hostname = node[:cloud][:public_hostname] #v5.8 only and cloud dependant
