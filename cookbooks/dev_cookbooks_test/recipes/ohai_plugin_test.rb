@@ -23,7 +23,6 @@ ruby_block "cloud plugins should not be null" do
    # This is a reminder to come back and add this check.
    provider = node[:cloud][:provider]
    #platform = node[:platform]
-   platform_version = node[:platform_version]
    public_ipv4 = node[:cloud][:public_ipv4] #v5.8 only and cloud dependant
    public_hostname = node[:cloud][:public_hostname] #v5.8 only and cloud dependant
    local_ipv4 = node[:cloud][:local_ipv4] #v5.8 only and cloud dependant
