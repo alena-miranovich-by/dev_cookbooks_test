@@ -53,6 +53,7 @@ ruby_block "Verify NAT routes got setup correctly" do
               else
                 /#{network}.*via.*#{@ip}/
               end
+        Chef::Log.info("#{route_regex}")
         matchdata = @routes_set.match(route_regex)
         missing_routes.push(route) if matchdata == nil
       end
