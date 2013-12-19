@@ -12,7 +12,7 @@
 #
 
 require '/var/spool/cloud/meta-data'
-#test_state = node[:nat_test][:nat_routes__expected]
+test_state = node[:nat_test][:nat_routes__expected]
 cloud = `cat /etc/rightscale.d/cloud`
 
 unless cloud.strip! != "vscale"

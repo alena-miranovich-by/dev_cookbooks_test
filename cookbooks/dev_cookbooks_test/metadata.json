@@ -1,47 +1,61 @@
 {
-  "license": "All rights reserved",
-  "suggestions": {
-  },
-  "recommendations": {
-  },
-  "dependencies": {
-  },
-  "long_description": "dev_cookbooks_test Cookbook\r\n===========================\r\nTODO: Enter the cookbook description here.\r\n\r\ne.g.\r\nThis cookbook makes your favorite breakfast sandwhich.\r\n\r\nRequirements\r\n------------\r\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\r\n\r\ne.g.\r\n#### packages\r\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\r\n\r\nAttributes\r\n----------\r\nTODO: List you cookbook attributes here.\r\n\r\ne.g.\r\n#### dev_cookbooks_test::default\r\n<table>\r\n  <tr>\r\n    <th>Key</th>\r\n    <th>Type</th>\r\n    <th>Description</th>\r\n    <th>Default</th>\r\n  </tr>\r\n  <tr>\r\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\r\n    <td>Boolean</td>\r\n    <td>whether to include bacon</td>\r\n    <td><tt>true</tt></td>\r\n  </tr>\r\n</table>\r\n\r\nUsage\r\n-----\r\n#### dev_cookbooks_test::default\r\nTODO: Write usage instructions for each cookbook.\r\n\r\ne.g.\r\nJust include `dev_cookbooks_test` in your node's `run_list`:\r\n\r\n```json\r\n{\r\n  \"name\":\"my_node\",\r\n  \"run_list\": [\r\n    \"recipe[dev_cookbooks_test]\"\r\n  ]\r\n}\r\n```\r\n\r\nContributing\r\n------------\r\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\r\n\r\ne.g.\r\n1. Fork the repository on Github\r\n2. Create a named feature branch (like `add_component_x`)\r\n3. Write you change\r\n4. Write tests for your change (if applicable)\r\n5. Run the tests, ensuring they all pass\r\n6. Submit a Pull Request using Github\r\n\r\nLicense and Authors\r\n-------------------\r\nAuthors: TODO: List authors\r\n",
+  "maintainer_email": "YOUR_EMAIL",
   "version": "0.2.1",
-  "recipes": {
-    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
-    "dev_cookbooks_test::check_log_level": "test",
-    "dev_cookbooks_test::default": "test",
-    "dev_cookbooks_test::nat_test": "NAT test"
-  },
-  "description": "Installs/Configures dev_cookbooks_test",
+  "name": "dev_cookbooks_test",
   "providing": {
   },
-  "name": "dev_cookbooks_test",
   "groupings": {
   },
-  "replacing": {
-  },
-  "conflicting": {
-  },
-  "platforms": {
-  },
-  "maintainer": "YOUR_COMPANY_NAME",
   "attributes": {
     "ssh_test/ssh_public_key_expected": {
       "choice": [
 
       ],
-      "calculated": false,
+      "display_name": "Input ssh_public_key expected",
+      "default": "false",
       "recipes": [
         "dev_cookbooks_test::ssh_key_test_vscale"
       ],
       "description": "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
-      "default": "false",
-      "type": "string",
+      "calculated": false,
       "required": "optional",
-      "display_name": "Input ssh_public_key expected"
+      "type": "string"
+    },
+    "nat_test/nat_routes__expected": {
+      "choice": [
+
+      ],
+      "display_name": "Input NAT_routes_expected",
+      "default": "true",
+      "recipes": [
+        "dev_cookbooks_test::nat_test"
+      ],
+      "description": "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
+      "calculated": false,
+      "required": "optional",
+      "type": "string"
     }
   },
-  "maintainer_email": "YOUR_EMAIL"
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "license": "All rights reserved",
+  "maintainer": "YOUR_COMPANY_NAME",
+  "platforms": {
+  },
+  "recipes": {
+    "dev_cookbooks_test::check_log_level": "test",
+    "dev_cookbooks_test::default": "test",
+    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
+    "dev_cookbooks_test::nat_test": "NAT test"
+  },
+  "description": "Installs/Configures dev_cookbooks_test",
+  "replacing": {
+  },
+  "conflicting": {
+  },
+  "dependencies": {
+  },
+  "long_description": "dev_cookbooks_test Cookbook\r\n===========================\r\nTODO: Enter the cookbook description here.\r\n\r\ne.g.\r\nThis cookbook makes your favorite breakfast sandwhich.\r\n\r\nRequirements\r\n------------\r\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\r\n\r\ne.g.\r\n#### packages\r\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\r\n\r\nAttributes\r\n----------\r\nTODO: List you cookbook attributes here.\r\n\r\ne.g.\r\n#### dev_cookbooks_test::default\r\n<table>\r\n  <tr>\r\n    <th>Key</th>\r\n    <th>Type</th>\r\n    <th>Description</th>\r\n    <th>Default</th>\r\n  </tr>\r\n  <tr>\r\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\r\n    <td>Boolean</td>\r\n    <td>whether to include bacon</td>\r\n    <td><tt>true</tt></td>\r\n  </tr>\r\n</table>\r\n\r\nUsage\r\n-----\r\n#### dev_cookbooks_test::default\r\nTODO: Write usage instructions for each cookbook.\r\n\r\ne.g.\r\nJust include `dev_cookbooks_test` in your node's `run_list`:\r\n\r\n```json\r\n{\r\n  \"name\":\"my_node\",\r\n  \"run_list\": [\r\n    \"recipe[dev_cookbooks_test]\"\r\n  ]\r\n}\r\n```\r\n\r\nContributing\r\n------------\r\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\r\n\r\ne.g.\r\n1. Fork the repository on Github\r\n2. Create a named feature branch (like `add_component_x`)\r\n3. Write you change\r\n4. Write tests for your change (if applicable)\r\n5. Run the tests, ensuring they all pass\r\n6. Submit a Pull Request using Github\r\n\r\nLicense and Authors\r\n-------------------\r\nAuthors: TODO: List authors\r\n"
 }
