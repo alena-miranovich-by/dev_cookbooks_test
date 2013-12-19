@@ -49,13 +49,15 @@ test_state = node[:nat_test][:nat_routes_expected]
           end
         else
           # for windows
-          load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "meta-data.rb")
+          load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
+
           if ENV.key?("RS_NAT_ADDRESS")
             @ip = ENV["RS_NAT_ADDRESS"]
           else
             #Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
             Chef::Log.info("there is no")
           end
+load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data")
 
         end
       end
