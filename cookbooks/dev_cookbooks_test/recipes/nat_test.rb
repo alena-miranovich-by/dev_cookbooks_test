@@ -34,14 +34,34 @@ ruby_block "Verify NAT routes got setup correctly" do
       if ENV.key?("RS_NAT_RANGES")
         ranges = ENV["RS_NAT_RANGES"].split(",")
        
-          # Parse to array [address, mask]
-          ranges.each do |route|
-            routes_env.push(route.split("/"))
-          end
+        # Parse to array [address, mask]
+        ranges.each do |route|
+          routes_env.push(route.split("/"))
+        end
+
+        
 
         unless node[:platform] == 'windows'
-          routes_set = `ip route show`
+          @routes_set = `ip route show`
+        else 
+          @routes_set = `route print`
+        end
 
+      routes_env.each do |route|
+        route_regex = if node[:platform] == 'windows'
+                        network = route[0]
+                        mask = '255.255.255.255'
+                  /#{network}.*#{mask}.*#{@ip}/
+                else
+                  /#{network}.*via.*#{@ip}/
+                end
+        matchdata = routes_set.match(route_regex)
+        if matchdata == nil
+           missing_routes.push(route) 
+        end
+      end
+     end
+=begin
           # Verify that every provided route got setup correctly on the instance
           routes_env.each do |route|
             # if mask is 32, it will not shown
@@ -60,7 +80,7 @@ ruby_block "Verify NAT routes got setup correctly" do
 
         end
       end
-      
+=end
       unless missing_routes.empty?
         Kernel::abort("=== FAIL === Routes have not been setup correctly. Missing routes: \n #{missing_routes.inspect}")
       else
