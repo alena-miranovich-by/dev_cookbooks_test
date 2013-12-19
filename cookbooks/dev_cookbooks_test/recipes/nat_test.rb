@@ -12,30 +12,34 @@
 #
 
 test_state = node[:nat_test][:nat_routes_expected]
-#cloud = `cat /etc/rightscale.d/cloud`
 
-#unless cloud.strip! != "vscale"
-  ruby_block "Verify NAT routes got setup correctly" do
-    block do
-      routes_env = []
-      missing_routes = []
-      # Get RS_NAT_ADDRESS
-      if ENV.key?("RS_NAT_ADDRESS")
-        @ip = ENV["RS_NAT_ADDRESS"]
-      else
-        Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
-      end
+ruby_block "Verify NAT routes got setup correctly" do
+  block do
+    routes_env = []
+    missing_routes = []
+
+    if node[:platform] == 'windows'
+      load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
+    else 
+      require '/var/spool/cloud/meta-data'
+    end
+
+    # Get RS_NAT_ADDRESS
+    if ENV.key?("RS_NAT_ADDRESS")
+      @ip = ENV["RS_NAT_ADDRESS"]
+    else
+      Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
+    end
       # Get RS_NAT_RANGES from meta-data
       if ENV.key?("RS_NAT_RANGES")
         ranges = ENV["RS_NAT_RANGES"].split(",")
        
-        unless node[:platform] == 'windows'
-          require '/var/spool/cloud/meta-data' 
           # Parse to array [address, mask]
           ranges.each do |route|
             routes_env.push(route.split("/"))
           end
 
+        unless node[:platform] == 'windows'
           routes_set = `ip route show`
 
           # Verify that every provided route got setup correctly on the instance
@@ -49,14 +53,8 @@ test_state = node[:nat_test][:nat_routes_expected]
           end
         else
           # for windows
-          load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
+          routes_set = `route PRINT -4` 
 
-          if ENV.key?("RS_NAT_ADDRESS")
-            @ip = ENV["RS_NAT_ADDRESS"]
-          else
-            #Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
-            Chef::Log.info("there is no")
-          end
 
         end
       end
