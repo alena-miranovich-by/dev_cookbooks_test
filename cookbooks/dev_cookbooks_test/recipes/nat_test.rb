@@ -12,7 +12,7 @@
 #
 
 require '/var/spool/cloud/meta-data'
-test_state = node[:nat_test][:nat_routes_expected]
+#test_state = node[:nat_test][:nat_routes_expected]
 Chef::Log.info("test-state is #{test_state}")
 cloud = `cat /etc/rightscale.d/cloud`
 Chef::Log.info("cloud - #{cloud}")
@@ -21,7 +21,6 @@ unless cloud.strip! != "vscale"
     block do
 Chef::Log.info("within ruby_block")
       routes_env = []
-      routes_set = `ip route show`
       missed_routes = []
       # Get RS_NAT_ADDRESS
       if ENV.key?("RS_NAT_ADDRESS")
@@ -32,13 +31,16 @@ Chef::Log.info("within ruby_block")
       # Get RS_NAT_RANGES from meta-data
       if ENV.key?("RS_NAT_RANGES")
         ranges = ENV["RS_NAT_RANGES"].split(",")
-        
+       
+       unless node[:platform] == 'windows'
+  
         # Parse to array [address, mask]
         ranges.each do |route|
           routes_env.push(route.split("/"))
         end
         Chef::Log.info("#{routes_env.inspect}")
 
+        routes_set = `ip route show`
         # Verify that every provided route got setup correctly on the instance
         routes_env.each do |route|
           # if mask is 32, it will not shown
@@ -58,11 +60,16 @@ Chef::Log.info("within ruby_block")
             end
           end
         end
+       else
+       # for windows
+       Chef::Log.info("it's wndows")
+       end
 
       end
       fail("Routes have not been setup correctly. Missed routes: \n #{missed_routes.inspect}") unless missed_routes.empty?
     end
-    not_if do test_state == 'false' end
+ #   not_if do test_state == 'false' end
   end
 end
+
          
