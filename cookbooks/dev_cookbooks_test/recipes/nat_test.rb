@@ -53,7 +53,9 @@ ruby_block "Verify NAT routes got setup correctly" do
           end
         else
           # for windows
-          routes_set = `route PRINT -4` 
+          routes_set = `route PRINT -4`
+          
+          Chef::Log.info("#{routes_set}") 
 
 
         end
