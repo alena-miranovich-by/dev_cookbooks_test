@@ -11,7 +11,6 @@
 # Test could be applied only for vScale cloud on Linux and Windows machines.
 #
 
-require '/var/spool/cloud/meta-data'
 test_state = node[:nat_test][:nat_routes_expected]
 #cloud = `cat /etc/rightscale.d/cloud`
 
@@ -31,6 +30,7 @@ test_state = node[:nat_test][:nat_routes_expected]
         ranges = ENV["RS_NAT_RANGES"].split(",")
        
         unless node[:platform] == 'windows'
+          require '/var/spool/cloud/meta-data' 
           # Parse to array [address, mask]
           ranges.each do |route|
             routes_env.push(route.split("/"))
@@ -49,7 +49,22 @@ test_state = node[:nat_test][:nat_routes_expected]
           end
         else
           # for windows
-          Chef::Log.info("it's wndows")
+          load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "meta-data")
+          if ENV.key?("RS_NAT_ADDRESS")
+            @ip = ENV["RS_NAT_ADDRESS"]
+          else
+            #Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
+            Chef::Log.info("there is no")
+          end
+          load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "meta-data.rb")
+          if ENV.key?("RS_NAT_ADDRESS")
+            @ip = ENV["RS_NAT_ADDRESS"]
+          else
+            #Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
+            Chef::Log.info("there is no")
+          end
+           Chef::Log.info("env = #{ENV["COMMON_APPDATA"]} ")
+
         end
       end
       
