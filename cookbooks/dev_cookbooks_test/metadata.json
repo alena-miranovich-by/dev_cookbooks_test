@@ -40,13 +40,13 @@
       "recipes": [
         "dev_cookbooks_test::nat_test"
       ],
-      "required": "required",
       "default": "true",
       "type": "string",
       "choice": [
 
       ],
-      "calculated": false
+      "calculated": false,
+      "required": "optional"
     }
   },
   "groupings": {
