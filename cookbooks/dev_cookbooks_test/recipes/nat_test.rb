@@ -13,6 +13,14 @@
 
 test_state = node[:nat_test][:nat_routes_expected]
 
+def cidr_to_netmask(cidr_range)
+  ipaddr = IPAddr.new(cidr_range)
+  ip = ipaddr.to_s
+  ipaddr.inspect.match(/^#<IPAddr:.+\/(.*)>$/)  # capture netmask from inspect string
+  netmask = $1
+  return ip, netmask
+end
+
 ruby_block "Verify NAT routes got setup correctly" do
   block do
     routes_env = []
@@ -28,7 +36,7 @@ ruby_block "Verify NAT routes got setup correctly" do
     if ENV.key?("RS_NAT_ADDRESS")
       @ip = ENV["RS_NAT_ADDRESS"]
     else
-      Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
+      Process::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
     end
       # Get RS_NAT_RANGES from meta-data
       if ENV.key?("RS_NAT_RANGES")
@@ -47,10 +55,8 @@ ruby_block "Verify NAT routes got setup correctly" do
           @routes_set = `route print`
         end
 
-      routes_env.each do |route|
         route_regex = if node[:platform] == 'windows'
-                        network = route[0]
-                        mask = '255.255.255.255'
+                  network, mask = cidr_to_netmask(ENV["RS_NAT_RANGES"])
                   /#{network}.*#{mask}.*#{@ip}/
                 else
                   /#{network}.*via.*#{@ip}/
@@ -59,7 +65,6 @@ ruby_block "Verify NAT routes got setup correctly" do
         if matchdata == nil
            missing_routes.push(route) 
         end
-      end
      end
 =begin
           # Verify that every provided route got setup correctly on the instance
@@ -82,7 +87,7 @@ ruby_block "Verify NAT routes got setup correctly" do
       end
 =end
       unless missing_routes.empty?
-        Kernel::abort("=== FAIL === Routes have not been setup correctly. Missing routes: \n #{missing_routes.inspect}")
+        Process::abort("=== FAIL === Routes have not been setup correctly. Missing routes: \n #{missing_routes.inspect}")
       else
         Chef::Log.info("=== PASS === NAT routes test completed successfully. Range from ENV has been setup correctly.")
       end
