@@ -16,6 +16,11 @@ require '/var/spool/cloud/meta-data'
 Chef::Log.info("test-state is #{test_state}")
 cloud = `cat /etc/rightscale.d/cloud`
 Chef::Log.info("cloud - #{cloud}")
+if ENV.key?("RS_NAT_ADDRESS")
+Chef::Log.info("wroks")
+else Chef::Log.info("not")
+end
+
 unless cloud.strip! != "vscale"
   ruby_block "Verify NAT routes got setup correctly" do
     block do
