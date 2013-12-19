@@ -18,7 +18,7 @@ attribute "ssh_test/ssh_public_key_expected",
   :default => "false",
   :type => "string"
 
-attribute "nat_test/nat_routes__expected",
+attribute "nat_test/nat_routes_expected",
   :display_name => "Input NAT_routes_expected",
   :description => "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
   :recipes => [ "dev_cookbooks_test::nat_test" ],

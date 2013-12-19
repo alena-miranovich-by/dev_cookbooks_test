@@ -12,12 +12,14 @@
 #
 
 require '/var/spool/cloud/meta-data'
-test_state = node[:nat_test][:nat_routes__expected]
+test_state = node[:nat_test][:nat_routes_expected]
+Chef::Log.info("test-state is #{test_state}"
 cloud = `cat /etc/rightscale.d/cloud`
-
+Chef::Log.info("cloud - #{cloud}")
 unless cloud.strip! != "vscale"
   ruby_block "Verify NAT routes got setup correctly" do
     block do
+Chef::Log.info("within ruby_block")
       routes_env = []
       routes_set = `ip route show`
       missed_routes = []
