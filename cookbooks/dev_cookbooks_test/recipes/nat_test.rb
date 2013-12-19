@@ -45,6 +45,7 @@ ruby_block "Verify NAT routes got setup correctly" do
         ip = ipaddr.to_s
         ipaddr.inspect.match(/^#<IPAddr:.+\/(.*)>$/)  # capture netmask from inspect string
         netmask = $1
+        Chef::Log.info("#{ip}, #{netmask}")
         return ip, netmask
         }
 
