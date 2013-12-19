@@ -55,7 +55,7 @@ ruby_block "Verify NAT routes got setup correctly" do
                 else
                   /#{network}.*via.*#{@ip}/
                 end
-        matchdata = routes_set.match(route_regex)
+        matchdata = @routes_set.match(route_regex)
         if matchdata == nil
            missing_routes.push(route) 
         end
