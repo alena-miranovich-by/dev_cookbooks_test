@@ -13,7 +13,7 @@
 
 require '/var/spool/cloud/meta-data'
 test_state = node[:nat_test][:nat_routes_expected]
-Chef::Log.info("test-state is #{test_state}"
+Chef::Log.info("test-state is #{test_state}")
 cloud = `cat /etc/rightscale.d/cloud`
 Chef::Log.info("cloud - #{cloud}")
 unless cloud.strip! != "vscale"
