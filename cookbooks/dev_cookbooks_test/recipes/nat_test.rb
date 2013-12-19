@@ -40,14 +40,10 @@ ruby_block "Verify NAT routes got setup correctly" do
           routes_env.push(route.split("/"))
         end
 
-       cidr_to_netmask = Proc.new { |cidr| 
-        mask = IPAddr.new('255.255.255.255').mask(cidr).to_s
-        #ipaddr = IPAddr.new(cidr_range)
-        #ip = ipaddr.to_s
-        #ipaddr.inspect.match(/^#<IPAddr:.+\/(.*)>$/)  # capture netmask from inspect string
-        #netmask = $1
-        Chef::Log.info("#{mask}")
-        mask
+        cidr_to_netmask = Proc.new { |cidr| 
+          mask = IPAddr.new('255.255.255.255').mask(cidr).to_s
+          Chef::Log.info("#{mask} from proc")
+          mask
         }
 
         unless node[:platform] == 'windows'
@@ -56,16 +52,20 @@ ruby_block "Verify NAT routes got setup correctly" do
           @routes_set = `route print`
         end
 
-        route_regex = if node[:platform] == 'windows'
+        routes_env.each do |route|
+          route_regex = if node[:platform] == 'windows'
                   network = route[0]
                   mask = cidr_to_netmask.call(route[1])
                   /#{network}.*#{mask}.*#{@ip}/
                 else
                   /#{network}.*via.*#{@ip}/
                 end
-        matchdata = @routes_set.match(route_regex)
-        if matchdata == nil
-           missing_routes.push(route) 
+          matchdata = @routes_set.match(route_regex)
+          if matchdata == nil
+             missing_routes.push(route)
+          else 
+            Chef::Log.info("Route #{route[0]} matched")
+          end
         end
      end
 =begin
