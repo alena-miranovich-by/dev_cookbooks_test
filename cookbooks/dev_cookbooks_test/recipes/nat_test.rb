@@ -57,7 +57,6 @@ test_state = node[:nat_test][:nat_routes_expected]
             #Kernel::abort("RS_NAT_ADDRESS is not defined in meta-data. Will not run test")
             Chef::Log.info("there is no")
           end
-load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data")
 
         end
       end
