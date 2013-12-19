@@ -1,64 +1,47 @@
 {
-  "name": "dev_cookbooks_test",
-  "description": "Installs/Configures dev_cookbooks_test",
-  "long_description": "dev_cookbooks_test Cookbook\n===========================\nTODO: Enter the cookbook description here.\n\ne.g.\nThis cookbook makes your favorite breakfast sandwhich.\n\nRequirements\n------------\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\n\ne.g.\n#### packages\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\n\nAttributes\n----------\nTODO: List you cookbook attributes here.\n\ne.g.\n#### dev_cookbooks_test::default\n<table>\n  <tr>\n    <th>Key</th>\n    <th>Type</th>\n    <th>Description</th>\n    <th>Default</th>\n  </tr>\n  <tr>\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\n    <td>Boolean</td>\n    <td>whether to include bacon</td>\n    <td><tt>true</tt></td>\n  </tr>\n</table>\n\nUsage\n-----\n#### dev_cookbooks_test::default\nTODO: Write usage instructions for each cookbook.\n\ne.g.\nJust include `dev_cookbooks_test` in your node's `run_list`:\n\n```json\n{\n  \"name\":\"my_node\",\n  \"run_list\": [\n    \"recipe[dev_cookbooks_test]\"\n  ]\n}\n```\n\nContributing\n------------\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\n\ne.g.\n1. Fork the repository on Github\n2. Create a named feature branch (like `add_component_x`)\n3. Write you change\n4. Write tests for your change (if applicable)\n5. Run the tests, ensuring they all pass\n6. Submit a Pull Request using Github\n\nLicense and Authors\n-------------------\nAuthors: TODO: List authors\n",
-  "maintainer": "YOUR_COMPANY_NAME",
-  "maintainer_email": "YOUR_EMAIL",
   "license": "All rights reserved",
-  "platforms": {
-  },
-  "dependencies": {
+  "suggestions": {
   },
   "recommendations": {
   },
-  "suggestions": {
+  "dependencies": {
   },
-  "conflicting": {
+  "long_description": "dev_cookbooks_test Cookbook\r\n===========================\r\nTODO: Enter the cookbook description here.\r\n\r\ne.g.\r\nThis cookbook makes your favorite breakfast sandwhich.\r\n\r\nRequirements\r\n------------\r\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\r\n\r\ne.g.\r\n#### packages\r\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\r\n\r\nAttributes\r\n----------\r\nTODO: List you cookbook attributes here.\r\n\r\ne.g.\r\n#### dev_cookbooks_test::default\r\n<table>\r\n  <tr>\r\n    <th>Key</th>\r\n    <th>Type</th>\r\n    <th>Description</th>\r\n    <th>Default</th>\r\n  </tr>\r\n  <tr>\r\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\r\n    <td>Boolean</td>\r\n    <td>whether to include bacon</td>\r\n    <td><tt>true</tt></td>\r\n  </tr>\r\n</table>\r\n\r\nUsage\r\n-----\r\n#### dev_cookbooks_test::default\r\nTODO: Write usage instructions for each cookbook.\r\n\r\ne.g.\r\nJust include `dev_cookbooks_test` in your node's `run_list`:\r\n\r\n```json\r\n{\r\n  \"name\":\"my_node\",\r\n  \"run_list\": [\r\n    \"recipe[dev_cookbooks_test]\"\r\n  ]\r\n}\r\n```\r\n\r\nContributing\r\n------------\r\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\r\n\r\ne.g.\r\n1. Fork the repository on Github\r\n2. Create a named feature branch (like `add_component_x`)\r\n3. Write you change\r\n4. Write tests for your change (if applicable)\r\n5. Run the tests, ensuring they all pass\r\n6. Submit a Pull Request using Github\r\n\r\nLicense and Authors\r\n-------------------\r\nAuthors: TODO: List authors\r\n",
+  "version": "0.2.1",
+  "recipes": {
+    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
+    "dev_cookbooks_test::check_log_level": "test",
+    "dev_cookbooks_test::default": "test",
+    "dev_cookbooks_test::nat_test": "NAT test"
   },
+  "description": "Installs/Configures dev_cookbooks_test",
   "providing": {
+  },
+  "name": "dev_cookbooks_test",
+  "groupings": {
   },
   "replacing": {
   },
+  "conflicting": {
+  },
+  "platforms": {
+  },
+  "maintainer": "YOUR_COMPANY_NAME",
   "attributes": {
     "ssh_test/ssh_public_key_expected": {
-      "display_name": "Input ssh_public_key expected",
-      "description": "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
-      "recipes": [
-        "dev_cookbooks_test::ssh_key_test_vscale"
-      ],
-      "default": "false",
-      "type": "string",
       "choice": [
 
       ],
       "calculated": false,
-      "required": "optional"
-    },
-    "ohai_plugin_test/expected_network_adapter": {
-      "display_name": "Network Adapters Expected",
-      "description": "What network adaptors should we expected to find. choose both for instances with both a public and private adapters -- like one EC2.",
-      "required": "recommended",
-      "default": "both",
-      "choice": [
-        "public",
-        "private",
-        "both"
-      ],
       "recipes": [
-        "dev_cookbooks_test::ohai_plugin_test"
+        "dev_cookbooks_test::ssh_key_test_vscale"
       ],
-      "calculated": false,
-      "type": "string"
+      "description": "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
+      "default": "false",
+      "type": "string",
+      "required": "optional",
+      "display_name": "Input ssh_public_key expected"
     }
   },
-  "groupings": {
-  },
-  "recipes": {
-    "dev_cookbooks_test::default": "test",
-    "dev_cookbooks_test::check_log_level": "test",
-    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
-    "dev_cookbooks_test::check_ip_addresses": "Test to verify is private IP private and Public IP - public",
-    "dev_cookbooks_test::ohai_plugin_test": "ohai plugin test updated"
-  },
-  "version": "0.2.1"
+  "maintainer_email": "YOUR_EMAIL"
 }
