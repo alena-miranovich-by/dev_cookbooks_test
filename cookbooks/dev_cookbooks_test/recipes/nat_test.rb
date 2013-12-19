@@ -13,13 +13,6 @@
 
 test_state = node[:nat_test][:nat_routes_expected]
 
-def cidr_to_netmask(cidr_range)
-  ipaddr = IPAddr.new(cidr_range)
-  ip = ipaddr.to_s
-  ipaddr.inspect.match(/^#<IPAddr:.+\/(.*)>$/)  # capture netmask from inspect string
-  netmask = $1
-  return ip, netmask
-end
 
 ruby_block "Verify NAT routes got setup correctly" do
   block do
@@ -47,7 +40,13 @@ ruby_block "Verify NAT routes got setup correctly" do
           routes_env.push(route.split("/"))
         end
 
-        
+       cidr_to_netmask = Proc.new { |cidr_range| 
+        ipaddr = IPAddr.new(cidr_range)
+        ip = ipaddr.to_s
+        ipaddr.inspect.match(/^#<IPAddr:.+\/(.*)>$/)  # capture netmask from inspect string
+        netmask = $1
+        return ip, netmask
+        }
 
         unless node[:platform] == 'windows'
           @routes_set = `ip route show`
