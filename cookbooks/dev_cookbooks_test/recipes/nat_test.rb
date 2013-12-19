@@ -45,13 +45,16 @@ ruby_block "Verify NAT routes got setup correctly" do
 
       platform?('windows') ? @routes_set = `route print` : @routes_set = `ip route show`
 
+Chef::Log.info("#{@routes_set}")
       routes_env.each do |route|
         network = route[0]
         route_regex = if platform?('windows')
                 mask = cidr_to_netmask.call(route[1])
                 /#{network}.*#{mask}.*#{@ip}/
+Chef::Log.info("#{network} and #{mask}")
               else
                 /#{network}.*via.*#{@ip}/
+Chef::Log.info("#{network}")
               end
         matchdata = @routes_set.match(route_regex)
         missing_routes.push(route) if matchdata == nil
