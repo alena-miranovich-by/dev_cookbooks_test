@@ -12,21 +12,14 @@
 #
 
 require '/var/spool/cloud/meta-data'
-#test_state = node[:nat_test][:nat_routes_expected]
-Chef::Log.info("test-state is #{test_state}")
-cloud = `cat /etc/rightscale.d/cloud`
-Chef::Log.info("cloud - #{cloud}")
-if ENV.key?("RS_NAT_ADDRESS")
-Chef::Log.info("wroks")
-else Chef::Log.info("not")
-end
+test_state = node[:nat_test][:nat_routes_expected]
+#cloud = `cat /etc/rightscale.d/cloud`
 
-unless cloud.strip! != "vscale"
+#unless cloud.strip! != "vscale"
   ruby_block "Verify NAT routes got setup correctly" do
     block do
-Chef::Log.info("within ruby_block")
       routes_env = []
-      missed_routes = []
+      missing_routes = []
       # Get RS_NAT_ADDRESS
       if ENV.key?("RS_NAT_ADDRESS")
         @ip = ENV["RS_NAT_ADDRESS"]
@@ -37,44 +30,37 @@ Chef::Log.info("within ruby_block")
       if ENV.key?("RS_NAT_RANGES")
         ranges = ENV["RS_NAT_RANGES"].split(",")
        
-       unless node[:platform] == 'windows'
-  
-        # Parse to array [address, mask]
-        ranges.each do |route|
-          routes_env.push(route.split("/"))
-        end
-        Chef::Log.info("#{routes_env.inspect}")
+        unless node[:platform] == 'windows'
+          # Parse to array [address, mask]
+          ranges.each do |route|
+            routes_env.push(route.split("/"))
+          end
 
-        routes_set = `ip route show`
-        # Verify that every provided route got setup correctly on the instance
-        routes_env.each do |route|
-          # if mask is 32, it will not shown
-          if route[1] == "32"
-            Chef::Log.info("mask is 32")
-            if routes_set.include? "#{route[0]} via #{@ip}"
-              Chef::Log.info("Route #{route[0]} setup correctly")
+          routes_set = `ip route show`
+
+          # Verify that every provided route got setup correctly on the instance
+          routes_env.each do |route|
+            # if mask is 32, it will not shown
+            if route[1] == "32"
+              missing_routes.push(route) unless routes_set.include? "#{route[0]} via #{@ip}"
             else
-              missed_routes.push(route)
-            end
-          else 
-            Chef::Log.info("mask is not 32")
-            if routes_set.include? "#{route[0]}/#{route[1]} via #{ip}"
-              Chef::log.info("Route #{route[0]} with #{route[1]} mask setup correctly")
-            else
-              missed_routes.push(route)
+              missing_routes.push(route) unless routes_set.include? "#{route[0]}/#{route[1]} via #{@ip}"
             end
           end
+        else
+          # for windows
+          Chef::Log.info("it's wndows")
         end
-       else
-       # for windows
-       Chef::Log.info("it's wndows")
-       end
-
       end
-      fail("Routes have not been setup correctly. Missed routes: \n #{missed_routes.inspect}") unless missed_routes.empty?
-    end
- #   not_if do test_state == 'false' end
-  end
-end
+      
+      unless missing_routes.empty?
+        Kernel::abort("=== FAIL === Routes have not been setup correctly. Missing routes: \n #{missing_routes.inspect}")
+      else
+        Chef::Log.info("=== PASS === NAT routes test completed successfully. Range from ENV has been setup correctly.")
+      end
 
-         
+    end
+    not_if do test_state == 'false' end
+  end
+#end
+       
