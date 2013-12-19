@@ -57,7 +57,8 @@ ruby_block "Verify NAT routes got setup correctly" do
         end
 
         route_regex = if node[:platform] == 'windows'
-                  network, mask = cidr_to_netmask.call(ENV["RS_NAT_RANGES"])
+                  network = route[0]
+                  mask = cidr_to_netmask.call(route[1])
                   /#{network}.*#{mask}.*#{@ip}/
                 else
                   /#{network}.*via.*#{@ip}/
