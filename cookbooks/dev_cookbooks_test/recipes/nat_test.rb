@@ -12,11 +12,10 @@
 #
 
 test_state = node[:nat_test][:nat_routes_expected]
-#require 'ipaddr'
 
-if node[:platform] == 'windows'
-  load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
-else
+if node[:platform] == 'windows' 
+  load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb") 
+else 
   require '/var/spool/cloud/meta-data'
 end
 
@@ -42,32 +41,25 @@ ruby_block "Verify NAT routes got setup correctly" do
 
       cidr_to_netmask = Proc.new { |cidr| 
         mask = IPAddr.new('255.255.255.255').mask(cidr).to_s
-        Chef::Log.info("#{mask} from proc")
-        mask
       }
 
-      unless node[:platform] == 'windows'
-        @routes_set = `ip route show`
-      else 
-        @routes_set = `route print`
-      end
+      platform?('windows') ? @routes_set = `route print` : @routes_set = `ip route show`
 
       routes_env.each do |route|
-        route_regex = if node[:platform] == 'windows'
-                network = route[0]
+        network = route[0]
+        route_regex = if platform?('windows')
                 mask = cidr_to_netmask.call(route[1])
                 /#{network}.*#{mask}.*#{@ip}/
               else
                 /#{network}.*via.*#{@ip}/
               end
         matchdata = @routes_set.match(route_regex)
-        if matchdata == nil
-           missing_routes.push(route)
-        else 
-          Chef::Log.info("Route #{route[0]} matched")
-        end
+        missing_routes.push(route) if matchdata == nil
       end
+    else 
+      Process::abort("RS_NAT_RANGES is not defined in meta-data")
     end
+
     unless missing_routes.empty?
       Process::abort("=== FAIL === Routes have not been setup correctly. Missing routes: \n #{missing_routes.inspect}")
     else
