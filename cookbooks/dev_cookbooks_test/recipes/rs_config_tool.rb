@@ -40,7 +40,7 @@ REPO_FREEZE_FEATURE = "package_repositories_freeze"
 MOTD_SYSTEM_PATH = "/etc/motd"
 MOTD_MSG_ORIGINAL = "/tmp/motd_original"
 MOTD_MSG_TEST = "/tmp/rs_config_motd"
-TIMESTAMP = "tmp/timestamp"
+TIMESTAMP = "/tmp/timestamp"
 TEST_MESSAGE = "rs_config test message"
 
 
@@ -168,7 +168,7 @@ ruby_block "Verify features changes" do
      # reboot the instance to reset parameters
      `rs_shutdown --reboot -i`
 
-  only_if do tag_exists?(TAG_DONE, UUID).empty? end
+  only_if do tag_exists?(TAG_DONE, UUID).empty? && !tag_exists?(TAG, UUID) end
   end
 end
 
