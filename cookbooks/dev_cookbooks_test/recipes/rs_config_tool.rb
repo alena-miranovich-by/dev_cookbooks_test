@@ -7,11 +7,15 @@
 # if applicable, other agreements such as a RightScale Master Subscription Agreement.
 #
 # Test will work only on Linux OS
-# Verifies rs_config CLI tool: decommission timeout feature. 
-# Verifies possibility to set user defined decommission timeout and 
-# checks that necessary message exists in system logs (Linux only)
-# Reboot will be performed during the test-case.
+# Verifies rs_config CLI tool: changing decommission_timeout value, disabling other features:
+# managed_login_enable, motd_update, package_repositories_freeze. 
+# Reboot will be performed two times during test-case: 
+# first one to apply all changes and the second one to reset values to default.
 #
+
+class Chef::Recipe
+  include RightlinkTester::Utils
+end
 
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
@@ -43,15 +47,6 @@ MOTD_MSG_TEST = "/tmp/rs_config_motd"
 TIMESTAMP = "/tmp/timestamp"
 TEST_MESSAGE = "rs_config test message"
 
-
-# Checks if provided tag exists in tags for the instance
-def tag_exists? (tag, uuid)
-  Chef::Log.info("Checking server collection for the #{tag}..")
-  tags_hash = node[:server_collection][uuid]
-  tags = tags_hash[tags_hash.keys[0]]
-  Chef::Log.info("Tags: #{tags.inspect}")
-  result = tags.select { |s| s == tag }
-end
 
 template "/tmp/rs_config_motd" do
   source "rs_config_motd.erb"
@@ -106,7 +101,13 @@ ruby_block "Verifies rs_config tool" do
       `logger "#{TEST_MESSAGE} #{timestamp}"`
       # reboot the instance
       `rs_shutdown --reboot -i`
+    # after reboot with applying changes
     elsif (tag_exists?(TAG,UUID) and tag_exists?(TAG_DONE, UUID).empty?)
+       # reset values to default
+      `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
+      `rs_config --set #{MOTD_UPD_FEATURE} on`
+      `rs_config --set #{REPO_FREEZE_FEATURE} on`
+      `rs_config --set #{DECOM_TIMEOUT_FEATURE} 180`
       # ========== Decommission timeout feature =================
       Chef::Log.info("Tag #{TAG} exists. Checking for the message in system logs..")
       # define existing system logs depends on distribution
@@ -140,16 +141,11 @@ ruby_block "Verifies rs_config tool" do
 
       Chef::Log.info("=== PASSED rs_config test === All features are verified")
       `rs_tag -a "#{TAG_DONE}"`
-       # reset values to default
-      `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
-      `rs_config --set #{MOTD_UPD_FEATURE} on`
-      `rs_config --set #{REPO_FREEZE_FEATURE} on`
-      `rs_config --set #{DECOM_TIMEOUT_FEATURE} 180`
       # reboot the instance to reset parameters
       `rs_shutdown --reboot -i`
     end
     
-  not_if do  platform?('windows') end #(tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID).empty?) end
+  not_if do platform?('windows') end
   end
 end
 
