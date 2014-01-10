@@ -118,7 +118,6 @@ ruby_block "Verifies rs_config tool" do
       $?.success? ? Chef::Log.info("==== PASS ==== Decommission_timeout feature verified.") : fail("==== FAIL ==== System log doesn't contain decommission message.")
 
       # ===== Managed_login_enable, MOTD_update, package_repositories_freeze ====
-      require 'fileutils'
       timestamp = File.open(TIMESTAMP) {|f| f.readline}
       Chef::Log.info("#{timestamp.rstrip.inspect}")
       fl = 0
@@ -136,6 +135,7 @@ ruby_block "Verifies rs_config tool" do
           end
         end
       end
+      Chef::Log.info("=== PASSED === managed_login and repo_freeze features are verified.")
 
       # ======= MOTD_update ======
       # compare original MOTD message with existing in /etc/motd - files must be different
