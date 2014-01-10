@@ -13,10 +13,6 @@
 # first one to apply all changes and the second one to reset values to default.
 #
 
-class Chef::Recipe
-  include RightlinkTester::Utils
-end
-
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
 
@@ -58,6 +54,9 @@ end
 
 ruby_block "Verifies rs_config tool" do
   block do
+  class Chef::Recipe
+    include RightlinkTester::Utils
+  end
     # before changes:
     if (tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID))
       # =============== 1. Decommission timeout  =================
