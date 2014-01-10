@@ -50,7 +50,7 @@ def tag_exists? (tag, uuid)
   tags_hash = node[:server_collection][uuid]
   tags = tags_hash[tags_hash.keys[0]]
   Chef::Log.info("Tags: #{tags.inspect}")
-  result = tags.select { |i| i == tag }
+  result = tags.select { |s| s == tag }
 end
 
 
