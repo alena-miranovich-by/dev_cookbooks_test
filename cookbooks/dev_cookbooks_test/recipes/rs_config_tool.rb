@@ -86,7 +86,6 @@ ruby_block "Verifies rs_config tool" do
       `rs_config --set #{MOTD_UPD_FEATURE} false`
       $?.success? ? Chef::Log.info("MOTD_update feature was disabled.") : fail("MOTD_update feature was not disabled. Something went wrong.")
       # save original MOTD file
-      require 'fileutils'
       FileUtils.cp(MOTD_SYSTEM_PATH, MOTD_MSG_ORIGINAL)
       # Overwrite motd file to test motd
       FileUtils.cp(MOTD_MSG_TEST, MOTD_SYSTEM_PATH)
@@ -99,7 +98,6 @@ ruby_block "Verifies rs_config tool" do
       # Add tag to perform verification on next boot
       `rs_tag -a "#{TAG}"`
       # Get timestamp and put with test message to system logs
-      require 'time'
       timestamp = Time.now.to_i
       `echo "#{timestamp}" > #{TIMESTAMP}`
       `logger "#{TEST_MESSAGE} #{timestamp}"`
