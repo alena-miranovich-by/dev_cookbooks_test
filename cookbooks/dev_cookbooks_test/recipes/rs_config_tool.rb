@@ -115,7 +115,7 @@ ruby_block "Change features values" do
       Chef::Log.info("Windows platform - will not run the test")
     end
     
-  only_if do tag_exists?(TAG, UUID).empty? && tag_exists?(TAG_DONE, UUID).empty? end
+  only_if do (tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID).empty?) end
   end
 end
 
@@ -168,7 +168,7 @@ ruby_block "Verify features changes" do
      # reboot the instance to reset parameters
      `rs_shutdown --reboot -i`
 
-  only_if do tag_exists?(TAG_DONE, UUID).empty? && !tag_exists?(TAG, UUID) end
+  only_if do (tag_exists?(TAG_DONE, UUID).empty? and !tag_exists?(TAG, UUID).empty?) end
   end
 end
 
