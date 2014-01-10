@@ -53,12 +53,6 @@ def tag_exists? (tag, uuid)
   result = tags.select { |s| s == tag }
 end
 
-
-require 'fileutils'
-def copy_file (source, destination)
-  FileUtils.cp source, destination
-end
-
 template "/tmp/rs_config_motd" do
   source "rs_config_motd.erb"
   mode 0440
@@ -67,9 +61,10 @@ template "/tmp/rs_config_motd" do
   action :create
 end
 
-ruby_block "Change features values" do
+ruby_block "Verifies rs_config tool" do
   block do
-    unless platform?('windows')
+    # before changes:
+    if (tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID))
       # =============== 1. Decommission timeout  =================
       # set decommission_timeout to very small value - 1 second
       decom_timeout = 1
@@ -111,19 +106,7 @@ ruby_block "Change features values" do
       `logger "#{TEST_MESSAGE} #{timestamp}"`
       # reboot the instance
       `rs_shutdown --reboot -i`
-    else 
-      Chef::Log.info("Windows platform - will not run the test")
-    end
-    
-  only_if do (tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID).empty?) end
-  end
-end
-
-
-ruby_block "Verify features changes" do
-  block do
-
-    unless platform?('windows')
+    elsif (tag_exists?(TAG,UUID) and tag_exists?(TAG_DONE, UUID).empty?)
       # ========== Decommission timeout feature =================
       Chef::Log.info("Tag #{TAG} exists. Checking for the message in system logs..")
       # define existing system logs depends on distribution
@@ -139,7 +122,7 @@ ruby_block "Verify features changes" do
       File.open(system_log, "r").each_line do |line|
         if fl != 1
           # find for certain string "test started"
-          if line.include? "#{TEST_MESSAGE} #{ts.rstrip}"
+          if line.include? "#{TEST_MESSAGE} #{timestamp.rstrip}"
             fl = 1
           end
         else
@@ -154,23 +137,20 @@ ruby_block "Verify features changes" do
       # ======= MOTD_update ======
       # compare original MOTD message with existing in /etc/motd - files must be different
       FileUtils.compare_file(MOTD_MSG_ORIGINAL, MOTD_SYSTEM_PATH) ? fail("=== FAIL === MOTD messages are identical") : Chef::Log.info("===PASSED=== MOTD messages are different as it was expected")
-      
-      Chef::Log.info("=== PASSED rs_config test === All features are verified")
-    else
-      Chef::Log.info("Windows platform - will not run this test")
-    end
-    `rs_tag -a "#{TAG_DONE}"`
-     # reset values to default
-     `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
-     `rs_config --set #{MOTD_UPD_FEATURE} on`
-     `rs_config --set #{REPO_FREEZE_FEATURE} on`
-     `rs_config --set #{DECOM_TIMEOUT_FEATURE} 180`
-     # reboot the instance to reset parameters
-     `rs_shutdown --reboot -i`
 
-  only_if do (tag_exists?(TAG_DONE, UUID).empty? and !tag_exists?(TAG, UUID).empty?) end
+      Chef::Log.info("=== PASSED rs_config test === All features are verified")
+      `rs_tag -a "#{TAG_DONE}"`
+       # reset values to default
+      `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
+      `rs_config --set #{MOTD_UPD_FEATURE} on`
+      `rs_config --set #{REPO_FREEZE_FEATURE} on`
+      `rs_config --set #{DECOM_TIMEOUT_FEATURE} 180`
+      # reboot the instance to reset parameters
+      `rs_shutdown --reboot -i`
+    end
+    
+  not_if do  platform?('windows') end #(tag_exists?(TAG, UUID).empty? and tag_exists?(TAG_DONE, UUID).empty?) end
   end
 end
-
 
 log "============ rs_config_tool test finished ============"
