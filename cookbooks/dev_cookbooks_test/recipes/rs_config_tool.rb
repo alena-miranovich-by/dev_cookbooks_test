@@ -54,7 +54,7 @@ end
 
 ruby_block "Verifies rs_config tool" do
   block do
-    tag_exists? = Proc.new { |tag, uuid|
+    tag_exists = Proc.new { |tag, uuid|
       Chef::Log.info("Checking server collection for the #{tag}..")
       tags_hash = node[:server_collection][uuid]
       tags = tags_hash[tags_hash.keys[0]]
@@ -63,7 +63,7 @@ ruby_block "Verifies rs_config tool" do
     }
 
     # before changes:
-    if (tag_exists?.call(TAG, UUID).empty? and tag_exists?.call(TAG_DONE, UUID))
+    if (tag_exists.call(TAG, UUID).empty? and tag_exists.call(TAG_DONE, UUID))
       # =============== 1. Decommission timeout  =================
       # set decommission_timeout to very small value - 1 second
       decom_timeout = 1
@@ -106,7 +106,7 @@ ruby_block "Verifies rs_config tool" do
       # reboot the instance
       `rs_shutdown --reboot -i`
     # after reboot with applying changes
-    elsif (tag_exists?.call(TAG,UUID) and tag_exists?.call(TAG_DONE, UUID).empty?)
+    elsif (tag_exists.call(TAG,UUID) and tag_exists.call(TAG_DONE, UUID).empty?)
        # reset values to default
       `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
       `rs_config --set #{MOTD_UPD_FEATURE} on`
