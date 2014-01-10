@@ -93,7 +93,7 @@ ruby_block "Verifies rs_config tool" do
 
       # ============= 4. Repositories freeze ==================
       # Disable package_repositories_freeze feature
-      `rs_config --set #{REPO_FREEZE_FEATURE} true`
+      `rs_config --set #{REPO_FREEZE_FEATURE} false`
       $?.success? ? Chef::Log.info("Repositories freeze feature was disabled.") : fail("Repo_freeze feature was not disabled. Something went wrong.")
 
       # Add tag to perform verification on next boot
