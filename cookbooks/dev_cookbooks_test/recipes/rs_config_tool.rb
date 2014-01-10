@@ -15,7 +15,7 @@
 
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
-i
+
 log "Add instance UUID as a tag: #{UUID_TAG}"
 right_link_tag UUID_TAG
 
