@@ -11,6 +11,8 @@ recipe "dev_cookbooks_test::check_log_level", "test"
 recipe "dev_cookbooks_test::ssh_key_test_vscale", "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file"
 recipe "dev_cookbooks_test::nat_test", "NAT test"
 recipe "dev_cookbooks_test::rs_config_tool", "rs_config test"
+recipe "dev_cookbooks_test::rightlink_cli_tools_test", "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
+
 
 attribute "ssh_test/ssh_public_key_expected",
   :display_name => "Input ssh_public_key expected",
@@ -22,6 +24,13 @@ attribute "ssh_test/ssh_public_key_expected",
 attribute "nat_test/nat_routes_expected",
   :display_name => "Input NAT_routes_expected",
   :description => "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
+  :required => "required",
   :recipes => [ "dev_cookbooks_test::nat_test" ],
-  :default => "true",
+  :default => "false",
   :type => "string"
+
+attribute "cli_test/param",
+  :display_name => "test param to provide it by json file",
+  :description => "Do not set manually this field. It should be provided by json file",
+  :recipes => ["rightlink_test::rightlink_cli_tools_test" ]
+

@@ -8,22 +8,42 @@
 
 
 module RightlinkTester
-  module Utils
-    
-    # Creates new Utils object. All helper methods should be here to avoid repeated code
+  module Utils 
+    # Creates new Utils object.
 
-    # Checks if provided tag exists in tags for the instance
+    # Gets RightLink version 
     #
-    # @param tag [String] is tag to be checked
-    # @param uuid [String] is instance's UUID
-    # 
-    # @return [Hash] not empty if tag is found
-    def tag_exists? (tag, uuid)
-      Chef::Log.info("Checking server collection for the #{tag}..")
+    # @return [String] version of installed RightLink on the instance
+    #
+    def get_rightlink_version
+      rightlink_version = ""
+      unless node[:platform] == 'windows'
+        # get RightLink version under Linux platform
+        rightlink_version = `cat /etc/rightscale.d/rightscale-release`
+      else
+        Chef::Log.info("Platform is Windows - don't know which version.")
+      end
+      rightlink_version
+    end  
+
+    # Gets server tags collection
+    # @param [String] uuid - UUID of this server
+    # @return [Array] - tags collection
+    #
+    def get_server_tags (uuid) 
       tags_hash = node[:server_collection][uuid]
-      tags = tags_hash[tags_hash.keys[0]]
-      Chef::Log.info("Tags: #{tags.inspect}")
+      tags_hash[tags_hash.keys[0]]
+    end
+
+    # Check if tag exists or not
+    # @param [String] tag
+    # @param [String] uuid - UUID of the server
+    # @return [bool] true if tag exists, false if tag doesn't exist
+    #
+    def tag_exists?(tag, uuid)
+      tags = get_server_tags(uuid)
       result = tags.select { |s| s == tag }
+      result.empty? ? false : true
     end
 
   end
