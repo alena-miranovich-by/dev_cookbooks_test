@@ -67,7 +67,7 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
 #      f.write(JSON.pretty_generate(tempHash))
 #    end
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tmp/parameters.json -v")
-    result.include?("Request sent successfully") ? Chef::Log.info(" === PASSED === request has been sent to run recipe. Please check audit entries to verify that test-recipe has been run.") : fail("=== FAILED === it's impossible to run recipe with --json option")
+    result.include?("Request processed successfully") ? Chef::Log.info(" === PASSED === request has been sent to run recipe. Please check audit entries to verify that test-recipe has been run.") : fail("=== FAILED === it's impossible to run recipe with --json option")
 
     #--audit_period PERIOD_IN_SECONDS
     result = is_cmd_works?("rs_run_right_script -n '#{TEST_RECIPE}' -a '10'")
