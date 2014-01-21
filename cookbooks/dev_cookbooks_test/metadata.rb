@@ -26,7 +26,6 @@ attribute "nat_test/nat_routes_expected",
   :description => "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
   :required => "required",
   :recipes => [ "dev_cookbooks_test::nat_test" ],
-  :default => "false",
   :type => "string"
 
 attribute "cli_test/param",
