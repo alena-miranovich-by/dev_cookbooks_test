@@ -32,5 +32,5 @@ attribute "nat_test/nat_routes_expected",
 attribute "cli_test/param",
   :display_name => "test param to provide it by json file",
   :description => "Do not set manually this field. It should be provided by json file",
-  :recipes => ["rightlink_test::rightlink_cli_tools_test" ]
+  :recipes => ["dev_cookbooks_test::rightlink_cli_test_recipe" ]
 
