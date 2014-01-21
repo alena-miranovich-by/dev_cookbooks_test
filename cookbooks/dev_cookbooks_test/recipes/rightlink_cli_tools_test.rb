@@ -17,7 +17,7 @@ class Chef::Resource::RubyBlock
 end
 
 UUID = node[:rightscale][:instance_uuid]
-TEST_RECIPE = "rightlink_test::rightlink_cli_test_recipe"
+TEST_RECIPE = "dev_cookbooks_test::rightlink_cli_test_recipe"
 
 ruby_block "Test help and version options of RightLink CLI tools" do
   block do
