@@ -71,14 +71,17 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
 
     #--audit_period PERIOD_IN_SECONDS
     result = is_cmd_works?("rs_run_right_script -n '#{TEST_RECIPE}' -a '10'")
-    result.include?("Failed") ? fail("=== FAILED === --audit_period option doesn't work correctly.") : Chef::Log.info("=== PASSED === --audit_period option works correctly.")
+    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
+#    result.include?("Failed") ? fail("=== FAILED === --audit_period option doesn't work correctly.") : Chef::Log.info("=== PASSED === --audit_period option works correctly.")
 
-    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -a 10")
-    result.include?("Failed") ? Chef::Log.info("=== PASSED === --audit_period option works correctly.") : fail("=== FAILED === --audit_period option doesn't work correctly.")
+    result = `rs_run_recipe -n '#{TEST_RECIPE}' -a 10`
+    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
+#    result.include?("Failed") ? Chef::Log.info("=== PASSED === --audit_period option works correctly.") : fail("=== FAILED === --audit_period option doesn't work correctly.")
 
     # --recipient_tags TAG_LIST
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
-    result.include?(':tags=>["tag1", "tag2"]') ? Chef::Log.info("=== PASSED === --recipient_tags have been parsed correctly") : fail("=== FAILED === --recipeint_tags have not been parsed correctly")
+    fail("=== FAILED === --recipeint_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
+#    result.include?(':tags=>["tag1", "tag2"]') ? Chef::Log.info("=== PASSED === --recipient_tags have been parsed correctly") : fail("=== FAILED === --recipeint_tags have not been parsed correctly")
   end
 end
 
@@ -88,13 +91,14 @@ ruby_block "Test rs_tag tool" do
     # rs_tag -a and rs_tag -q already validated by other scripts (BTW, will it a good idea to gather them togerher?
     # rs_tag -l -e -f
     result = is_cmd_works?("rs_tag -l -e -f json")
-    original = get_server_tags 
-    if (original = result) 
-      Chef::Log.info("=== PASSED === rs_tag -l works correctly")
-    else 
-      Chef::Log.info("=== FAILED === rs_tag -l doesn't work correctly. See output: \n #{result}")
-      fail("rs_tag -l not verified")
-    end
+    original = get_server_tags
+    fail("=== FAILED === rs_tag -l doesn't work correctly. See output: \n #{result}") unless original = result 
+#    if (original = result) 
+#      Chef::Log.info("=== PASSED === rs_tag -l works correctly")
+#    else 
+#      Chef::Log.info("=== FAILED === rs_tag -l doesn't work correctly. See output: \n #{result}")
+#      fail("rs_tag -l not verified")
+#    end
     # rs_tag -r 
     tag = "rightlink_cli:test=tag_to_remove"
     `rs_tag -a #{tag}`
@@ -107,7 +111,8 @@ ruby_block "Test rs_tag tool" do
     end
     # rs_tag -t 
     result = is_cmd_works?("rs_tag -l -t 0")
-    result.include?("Timed out waiting for agent reply") ? Chef::Log.info("=== PASSED === rs_tag -t option works correctly") : fail("=== FAILED === rs_tag -t option doesn't work as expected")
+    fail("=== FAILED === rs_tag -t option doesn't work as expected") unless result.include?("Timed out waiting for agent reply")
+#    result.include?("Timed out waiting for agent reply") ? Chef::Log.info("=== PASSED === rs_tag -t option works correctly") : fail("=== FAILED === rs_tag -t option doesn't work as expected")
   end
   not_if { platform?('windows') }
 end
