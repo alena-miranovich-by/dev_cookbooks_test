@@ -54,8 +54,8 @@ module RightlinkTester
     #
     def is_cmd_works? (command)
       output = `#{command}`
-output
-#      $?.success? ? true : output, false
+      fail("#{command} doesn't work. see output: #{output}.") unless $?.success?
+      output
     end
 
 
