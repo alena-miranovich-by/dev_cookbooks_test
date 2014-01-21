@@ -53,12 +53,7 @@ module RightlinkTester
     #
     def is_cmd_works? (command)
       output = `#{command}`
-      if ($?.success?)
-        Chef::Log.info("=== #{command} works ===")
-      else
-        Chef::Log.info("=== FAILED === #{command} doesn't work.\n #{output}")
-        fail("#{command} doesn't work")
-      end
+      fail("#{command} doesn't work.\n #{output}") unless $?.success?
       output
     end
 
