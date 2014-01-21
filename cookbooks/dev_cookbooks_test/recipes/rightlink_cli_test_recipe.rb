@@ -9,13 +9,4 @@
 # Additional recipe to test rightlink command line tool rs_run_recipe
 #
 
-ruby_block "test recipe" do
-  block do
-    if [:cli_test][:param] == ""
-      Chef::Log.info("test message from test recipe")
-    else
-      param = [:cli_test][:param]
-      Chef::Log.info("parameters from JSON file: #{param}")
-    end
-  end
-end
+node[:cli_test][:param].empty? ? Chef::Log.info("test message from test recipe") : Chef::Log.info("parameters from JSON file: #{node[:cli_test][:param]}")
