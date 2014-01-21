@@ -50,11 +50,12 @@ module RightlinkTester
     # Checks if provided command work or not at all and returns output
     # @param [String] command
     # @return [String] output of the result of executing this command
+    # @return [bool] returns false if command was not executed successfuly (doesn't work)
     #
     def is_cmd_works? (command)
       output = `#{command}`
-      fail("#{command} doesn't work.\n #{output}") unless $?.success?
-      output
+output
+#      $?.success? ? true : output, false
     end
 
 

@@ -28,10 +28,10 @@ ruby_block "Test help and version options of RightLink CLI tools" do
     @rl_tools.push("rs_config") if rl_version.match('^6.*$')
 
     @rl_tools.each do |tool|
-      result = is_cmd_works?([tool,"--help"].join(' '))
+      result = is_cmd_works?([tool, "--version"].join(' '))
       fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}") unless result.include?(tool)
       result = is_cmd_works?([tool,"--version"].join(' '))
-      fail("=== FAILED: #{tool} --version prints incorrect RightLink version. === See output: \n #{result}") unless result.include?(rl_version.rstrip) 
+      fail("=== FAILED: #{tool} --version prints incorrect RightLink version. === See output: \n #{result}") unless result.include?(rl_version.rstrip)
     end
     Chef::Log.info("=== PASSED === --help and --version options are verified for RightLink tools #{@rl_tools.inspect}")
   end
@@ -43,17 +43,20 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
   block do 
     #  ==== rs_run_right_script/ recipe ====
     # --identity option will check with incorrect value
-    result = is_cmd_works?("rs_run_right_script --identity 0 -v")
-    result.include?("Could not find RightScript 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
-
-    result = is_cmd_works?("rs_run_recipe -i 0 -v")
-    result.include?("Could not find recipe 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
+    result = `rs_run_right_script --identity 0 -v`
+    fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find RightScript 0")
+   # result = is_cmd_works?("rs_run_right_script --identity 0 -v")
+#    result.include?("Could not find RightScript 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
+    result = `rs_run_recipe -i 0 -v`
+    fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find recipe 0")
+#    result = is_cmd_works?("rs_run_recipe -i 0 -v")
+  #  result.include?("Could not find recipe 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
 
     # --json JSON_FILE
     # create test recipe to output parameters
     # create json file with parameters
     require 'json'
-    tempHash = {"key_a" => "val_a", "key_b" => "val_b"}
+    tempHash = {"cli_test" => {"param" => "test_parameter_value"}}
     File.open("/tmp/temp.json", "w") do |f|
       f.write(JSON.pretty_generate(tempHash))
     end

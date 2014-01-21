@@ -14,7 +14,8 @@ ruby_block "test recipe" do
     if [:cli_test][:param].empty?
       Chef::Log.info("test message from test recipe")
     else
-      Chef::Log.info("parameters from JSON file")
+      param = [:cli_test][:param]
+      Chef::Log.info("parameters from JSON file: #{param}")
     end
   end
 end
