@@ -11,7 +11,7 @@
 
 ruby_block "test recipe" do
   block do
-    if [:cli_test][:param].empty?
+    if [:cli_test][:param] == ""
       Chef::Log.info("test message from test recipe")
     else
       param = [:cli_test][:param]

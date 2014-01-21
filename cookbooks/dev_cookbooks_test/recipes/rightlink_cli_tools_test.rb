@@ -38,6 +38,12 @@ ruby_block "Test help and version options of RightLink CLI tools" do
   not_if { platform?('windows') }
 end
 
+template_path = ::File.join(::Dir.tmpdir, "parameters.json")
+template "/tmp/parameters.json" do
+  path template_path
+  source "parameters.erb"
+  action :create
+end
 
 ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
   block do 
@@ -55,12 +61,12 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
     # --json JSON_FILE
     # create test recipe to output parameters
     # create json file with parameters
-    require 'json'
-    tempHash = {"cli_test" => {"param" => "test_parameter_value"}}
-    File.open("/tmp/temp.json", "w") do |f|
-      f.write(JSON.pretty_generate(tempHash))
-    end
-    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tmp/temp.json -v")
+#    require 'json'
+#    tempHash = {"cli_test" => {"param" => "test_parameter_value"}}
+#    File.open("/tmp/temp.json", "w") do |f|
+#      f.write(JSON.pretty_generate(tempHash))
+#    end
+    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tmp/parameters.json -v")
     result.include?("Request sent successfully") ? Chef::Log.info(" === PASSED === request has been sent to run recipe. Please check audit entries to verify that test-recipe has been run.") : fail("=== FAILED === it's impossible to run recipe with --json option")
 
     #--audit_period PERIOD_IN_SECONDS
