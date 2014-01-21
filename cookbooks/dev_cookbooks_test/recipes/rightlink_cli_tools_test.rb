@@ -29,10 +29,9 @@ ruby_block "Test help and version options of RightLink CLI tools" do
 
     @rl_tools.each do |tool|
       result = is_cmd_works?([tool,"--help"].join(' '))
-      result.include?("#{tool}") ? Chef::Log.info("=== PASSED: #{tool} --help verified ===") : fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}")
-
+      result.include?(tool) ? Chef::Log.info("=== PASSED: #{tool} --help verified ===") : fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}")
       result = is_cmd_works?([tool,"--version"].join(' '))
-      result.include?("#{rl_version}") ? Chef::Log.info("=== PASSED: #{tool} --version verified ===") : fail("=== FAILED: #{tool} --version prints incorrect RightLink version. === See output: \n #{result}")
+      result.include?(rl_version.rstrip) ? Chef::Log.info("=== PASSED: #{tool} --version verified ===") : fail("=== FAILED: #{tool} --version prints incorrect RightLink version. === See output: \n #{result}")
     end
     Chef::Log.info("=== PASSED === --help and --version options are verified for RightLink tools")
   end
