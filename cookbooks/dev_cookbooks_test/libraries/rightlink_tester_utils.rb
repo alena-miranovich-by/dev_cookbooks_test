@@ -35,7 +35,7 @@ module RightlinkTester
       tags_hash[tags_hash.keys[0]]
     end
 
-    # Check if tag exists or not
+    # Checks if tag exists or not
     # @param [String] tag
     # @param [String] uuid - UUID of the server
     # @return [bool] true if tag exists, false if tag doesn't exist
@@ -45,6 +45,24 @@ module RightlinkTester
       result = tags.select { |s| s == tag }
       result.empty? ? false : true
     end
+
+
+    # Checks if provided command work or not at all and returns output
+    # @param [String] command
+    # @return [String] output of the result of executing this command
+    #
+    def is_cmd_works? (command)
+      output = `#{command}`
+      if ($?.success?)
+        Chef::Log.info("=== #{command} works ===")
+      else
+        Chef::Log.info("=== FAILED === #{command} doesn't work.\n #{output}")
+        fail("#{command} doesn't work")
+      end
+      output
+    end
+
+
 
   end
 end
