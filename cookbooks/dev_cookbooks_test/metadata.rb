@@ -12,6 +12,7 @@ recipe "dev_cookbooks_test::ssh_key_test_vscale", "Test to verify that the sshke
 recipe "dev_cookbooks_test::nat_test", "NAT test"
 recipe "dev_cookbooks_test::rs_config_tool", "rs_config test"
 recipe "dev_cookbooks_test::rightlink_cli_tools_test", "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
+recipe "dev_cookbooks_test::rightlink_cli_test_recipe", "Additional recipe-helper to test rightlink cli tool"
 
 
 attribute "ssh_test/ssh_public_key_expected",
