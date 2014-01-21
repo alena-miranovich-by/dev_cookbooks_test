@@ -51,32 +51,20 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
     # --identity option will check with incorrect value
     result = `rs_run_right_script --identity 0 -v`
     fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find RightScript 0")
-   # result = is_cmd_works?("rs_run_right_script --identity 0 -v")
-#    result.include?("Could not find RightScript 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
     result = `rs_run_recipe -i 0 -v`
     fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find recipe 0")
-#    result = is_cmd_works?("rs_run_recipe -i 0 -v")
-  #  result.include?("Could not find recipe 0") ? Chef::Log.info("=== PASSED === didn't launch unexisting RightScript. See output: \n #{result}") : fail("=== FAILED === Something went wrong. See output: \n #{result}")
 
     # --json JSON_FILE
-    # create test recipe to output parameters
-    # create json file with parameters
-#    require 'json'
-#    tempHash = {"cli_test" => {"param" => "test_parameter_value"}}
-#    File.open("/tmp/temp.json", "w") do |f|
-#      f.write(JSON.pretty_generate(tempHash))
-#    end
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tmp/parameters.json -v")
-    result.include?("Request processed successfully") ? Chef::Log.info(" === PASSED === request has been sent to run recipe. Please check audit entries to verify that test-recipe has been run.") : fail("=== FAILED === it's impossible to run recipe with --json option")
+    fail("=== FAILED === it's impossible to run recipe with --json option") unless result.include?("Request processed successfully")
+#    result.include?("Request processed successfully") ? Chef::Log.info(" === PASSED === request has been sent to run recipe. Please check audit entries to verify that test-recipe has been run.") : fail("=== FAILED === it's impossible to run recipe with --json option")
 
     #--audit_period PERIOD_IN_SECONDS
-    result = is_cmd_works?("rs_run_right_script -n '#{TEST_RECIPE}' -a '10'")
-    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
-#    result.include?("Failed") ? fail("=== FAILED === --audit_period option doesn't work correctly.") : Chef::Log.info("=== PASSED === --audit_period option works correctly.")
+#    result = is_cmd_works?("rs_run_right_script -n '#{TEST_RECIPE}' -a '10'")
+#    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
 
-    result = `rs_run_recipe -n '#{TEST_RECIPE}' -a 10`
-    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
-#    result.include?("Failed") ? Chef::Log.info("=== PASSED === --audit_period option works correctly.") : fail("=== FAILED === --audit_period option doesn't work correctly.")
+#    result = `rs_run_recipe -n '#{TEST_RECIPE}' -a 10`
+#    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
 
     # --recipient_tags TAG_LIST
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
