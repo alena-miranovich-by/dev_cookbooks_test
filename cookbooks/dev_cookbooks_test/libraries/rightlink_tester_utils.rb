@@ -35,18 +35,6 @@ module RightlinkTester
       tags_hash[tags_hash.keys[0]]
     end
 
-    # Checks if tag exists or not
-    # @param [String] tag
-    # @param [String] uuid - UUID of the server
-    # @return [bool] true if tag exists, false if tag doesn't exist
-    #
-    def tag_exists?(tag, uuid)
-      tags = get_server_tags(uuid)
-      result = tags.select { |s| s == tag }
-      result.empty? ? false : true
-    end
-
-
     # Checks if provided command work or not at all and returns output
     # @param [String] command
     # @return [String] output of the result of executing this command
@@ -57,8 +45,6 @@ module RightlinkTester
       fail("#{command} doesn't work. see output: #{output}.") unless $?.success?
       output
     end
-
-
 
   end
 end
