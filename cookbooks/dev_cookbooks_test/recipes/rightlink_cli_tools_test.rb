@@ -41,6 +41,7 @@ ruby_block "Test help and version options of RightLink CLI tools" do
  # not_if { platform?('windows') }
 end
 
+
 directory "/tester" do
   owner "root"
   group "root"
@@ -48,7 +49,7 @@ directory "/tester" do
   action :create
 end
 
-template "/tester/parametes.json" do
+template "/tester/parameters.json" do
   source "parameters.erb"
   mode 0440
   owner "root"
