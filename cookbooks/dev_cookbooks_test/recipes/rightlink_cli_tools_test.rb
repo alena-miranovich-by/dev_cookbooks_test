@@ -22,13 +22,16 @@ TEST_RECIPE = "rightlink_test::rightlink_cli_test_recipe"
 
 ruby_block "Test help and version options of RightLink CLI tools" do
   block do
+    Chef::Log.info("test1")
     @rl_tools = [ "rs_connect", "rs_log_level", "rs_reenroll", "rs_run_recipe", "rs_run_right_script",
              "rs_shutdown", "rs_tag", "rs_thunk", "rs_state" ]
     rl_version = get_rightlink_version
+    Chef::Log.info("test2")
     Chef::Log.info("RightLink version is #{rl_version}")
     @rl_tools.push("rs_config") if rl_version.match('^6.*$')
 
     @rl_tools.each do |tool|
+      Chef::Log.info("test3")
       result = is_cmd_works?([tool, "--help"].join(' '))
       fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}") unless result.include?(tool)
       result = is_cmd_works?([tool,"--version"].join(' '))
@@ -48,6 +51,7 @@ end
 
 ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
   block do 
+Chef::Log.info("test4")
     #  ==== rs_run_right_script/ recipe ====
     # --identity option will check with incorrect value
     result = `rs_run_right_script --identity 0 -v`
@@ -65,7 +69,7 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
 
 #    result = `rs_run_recipe -n '#{TEST_RECIPE}' -a 10`
 #    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
-
+Chef::log.info("test5")
     # --recipient_tags TAG_LIST
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
     fail("=== FAILED === --recipient_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
@@ -91,6 +95,7 @@ end
 
 ruby_block "Test rs_tag tool" do
   block do
+Chef::Log.info("test6")
     # ===== rs_tag =====
     # rs_tag -l -e -f
     result = is_cmd_works?("rs_tag -l -e -f json")
