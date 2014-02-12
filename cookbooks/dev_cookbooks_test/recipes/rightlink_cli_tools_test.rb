@@ -42,7 +42,7 @@ ruby_block "Test help and version options of RightLink CLI tools" do
 end
 
 test_dir = "/tester"
-test_dir = "C:/\tester" if platform?('windows') 
+test_dir = "C:\tester" if platform?('windows') 
 
 directory "#{test_dir}" do
   owner "root"
