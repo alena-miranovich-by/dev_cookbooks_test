@@ -31,7 +31,6 @@ ruby_block "Test help and version options of RightLink CLI tools" do
     @rl_tools.push("rs_config") if rl_version.match('^6.*$')
 
     @rl_tools.each do |tool|
-      Chef::Log.info("test3")
       result = is_cmd_works?([tool, "--help"].join(' '))
       fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}") unless result.include?(tool)
       result = is_cmd_works?([tool,"--version"].join(' '))
@@ -42,10 +41,18 @@ ruby_block "Test help and version options of RightLink CLI tools" do
  # not_if { platform?('windows') }
 end
 
-template_path = ::File.join(::Dir.tmpdir, "parameters.json")
-template "/tmp/parameters.json" do
-  path template_path
+directory "/tester" do
+  owner "root"
+  group "root"
+  mode 0755
+  action :create
+end
+
+template "/tester/parametes.json" do
   source "parameters.erb"
+  mode 0440
+  owner "root"
+  group "root"
   action :create
 end
 
@@ -60,7 +67,7 @@ Chef::Log.info("test4")
     fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find recipe 0")
 
     # --json JSON_FILE
-    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tmp/parameters.json -v")
+    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tester/parameters.json -v")
     fail("=== FAILED === it's impossible to run recipe with --json option") unless result.include?("Request processed successfully")
 
     #--audit_period PERIOD_IN_SECONDS
