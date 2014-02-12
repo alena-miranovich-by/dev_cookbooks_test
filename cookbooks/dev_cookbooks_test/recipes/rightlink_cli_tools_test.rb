@@ -45,17 +45,17 @@ test_dir = "/tester"
 test_dir = "C:\\tester" if platform?('windows') 
 
 directory "#{test_dir}" do
-  owner "root"
-  group "root"
-  mode 0755
+#  owner "root"
+#  group "root"
+#  mode 0755
   action :create
 end
 
 template "#{test_dir}/parameters.json" do
   source "parameters.erb"
-  mode 0440
-  owner "root"
-  group "root"
+#  mode 0440
+#  owner "root"
+#  group "root"
   action :create
 end
 
