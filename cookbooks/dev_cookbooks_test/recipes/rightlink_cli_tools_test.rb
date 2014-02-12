@@ -41,15 +41,17 @@ ruby_block "Test help and version options of RightLink CLI tools" do
  # not_if { platform?('windows') }
 end
 
+test_dir = "/tester"
+test_dir = "C:/tester" if platform?('windows') 
 
-directory "/tester" do
+directory "#{test_dir}" do
   owner "root"
   group "root"
   mode 0755
   action :create
 end
 
-template "/tester/parameters.json" do
+template "#{test_dir}/parameters.json" do
   source "parameters.erb"
   mode 0440
   owner "root"
@@ -68,7 +70,7 @@ Chef::Log.info("test4")
     fail("=== FAILED === Something went wrong. See output: \n #{result}") unless result.include?("Could not find recipe 0")
 
     # --json JSON_FILE
-    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j /tester/parameters.json -v")
+    result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -j '#{test_dir}/parameters.json' -v")
     fail("=== FAILED === it's impossible to run recipe with --json option") unless result.include?("Request processed successfully")
 
     #--audit_period PERIOD_IN_SECONDS
