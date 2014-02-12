@@ -77,7 +77,7 @@ Chef::Log.info("test4")
 
 #    result = `rs_run_recipe -n '#{TEST_RECIPE}' -a 10`
 #    fail("=== FAILED === --audit_period option doesn't work correctly.") if result.include?("Failed")
-Chef::log.info("test5")
+Chef::Log.info("test5")
     # --recipient_tags TAG_LIST
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
     fail("=== FAILED === --recipient_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
