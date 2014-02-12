@@ -17,7 +17,7 @@ class Chef::Resource::RubyBlock
 end
 
 UUID = node[:rightscale][:instance_uuid]
-TEST_RECIPE = "dev_cookbooks_test::rightlink_cli_test_recipe"
+TEST_RECIPE = "rightlink_test::rightlink_cli_test_recipe"
 
 
 ruby_block "Test help and version options of RightLink CLI tools" do
@@ -29,14 +29,14 @@ ruby_block "Test help and version options of RightLink CLI tools" do
     @rl_tools.push("rs_config") if rl_version.match('^6.*$')
 
     @rl_tools.each do |tool|
-      result = is_cmd_works?([tool, "--version"].join(' '))
+      result = is_cmd_works?([tool, "--help"].join(' '))
       fail("=== FAILED: #{tool} --help works incorrectly === See output: \n #{result}") unless result.include?(tool)
       result = is_cmd_works?([tool,"--version"].join(' '))
       fail("=== FAILED: #{tool} --version prints incorrect RightLink version. === See output: \n #{result}") unless result.include?(rl_version.rstrip)
     end
     Chef::Log.info("=== PASSED === --help and --version options are verified for RightLink tools #{@rl_tools.inspect}")
   end
-  not_if { platform?('windows') }
+ # not_if { platform?('windows') }
 end
 
 template_path = ::File.join(::Dir.tmpdir, "parameters.json")
@@ -68,8 +68,10 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
 
     # --recipient_tags TAG_LIST
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
-    fail("=== FAILED === --recipeint_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
+    fail("=== FAILED === --recipient_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
+    Chef::Log.info("=== PASSED === rs_run_right_script / recipe will passed --identity, --recipient_tags and --json options.")
   end
+  #not_if { platform?('windows') }
 end
 
 UUID_TAG = "rs_instance:uuid=#{UUID}"
@@ -97,26 +99,10 @@ ruby_block "Test rs_tag tool" do
     # rs_tag -t 
     result = `rs_tag -l -t 0`
     fail("=== FAILED === rs_tag -t option doesn't work as expected") if $?.success?
+    Chef::Log.info("=== PASSED === rs_tag --list options verified")
   end
-  not_if { platform?('windows') }
+  #not_if { platform?('windows') }
 end
 
-ruby_block "Test rs_tag tool --add and --remove options" do
-  block do
-    tag = "rightlink_cli:test=tag_to_remove"
-    `rs_tag -a #{tag}`
-    sleep(30)
-    tags_list = `rs_tag -l`
-    if (tags_list.include?(tag)) 
-      result = is_cmd_works?("rs_tag -r #{tag}")
-      sleep(30)
-      tags_list = `rs_tag -l`
-      tags_list.include?(tag) ? fail("Tag has not been removed") : Chef::Log.info("Tag has been removed successfully.")
-    else 
-      fail("=== FAILED === rs_tag -a didn't add a tag")
-    end
-  end
-  not_if { platform?('windows') }
-end
 
 

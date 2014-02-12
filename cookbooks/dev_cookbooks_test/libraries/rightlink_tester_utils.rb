@@ -11,19 +11,19 @@ module RightlinkTester
   module Utils 
     # Creates new Utils object.
 
-    # Gets RightLink version 
-    #
+    # Gets RightLink version (for RL5.9+ only) 
     # @return [String] version of installed RightLink on the instance
     #
     def get_rightlink_version
-      rightlink_version = ""
-      unless node[:platform] == 'windows'
+      rightlink_version = Gem::Specification.find_by_name("right_link").version.to_s
+     
+#      unless node[:platform] == 'windows'
         # get RightLink version under Linux platform
-        rightlink_version = `cat /etc/rightscale.d/rightscale-release`
-      else
-        Chef::Log.info("Platform is Windows - don't know which version.")
-      end
-      rightlink_version
+ #       rightlink_version = `cat /etc/rightscale.d/rightscale-release`
+  #    else
+   #     Chef::Log.info("Platform is Windows - don't know which version.")
+    #  end
+     # rightlink_version
     end  
 
     # Gets server tags collection

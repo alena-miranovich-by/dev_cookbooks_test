@@ -9,4 +9,8 @@
 # Additional recipe to test rightlink command line tool rs_run_recipe
 #
 
-node[:cli_test][:param].empty? ? Chef::Log.info("test message from test recipe") : Chef::Log.info("parameters from JSON file: #{node[:cli_test][:param]}")
+if node[:cli_test][:param].empty? 
+  Chef::Log.info("test message from test recipe") 
+else
+  Chef::Log.info("parameters from JSON file: #{node[:cli_test][:param]}")
+end
