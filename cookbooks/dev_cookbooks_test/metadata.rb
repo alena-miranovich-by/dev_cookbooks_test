@@ -13,7 +13,15 @@ recipe "dev_cookbooks_test::nat_test", "NAT test"
 recipe "dev_cookbooks_test::rs_config_tool", "rs_config test"
 recipe "dev_cookbooks_test::rightlink_cli_tools_test", "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
 recipe "dev_cookbooks_test::rightlink_cli_test_recipe", "Additional recipe-helper to test rightlink cli tool"
+recipe "dev_cookbooks_test::ohai_plugin_test", "ohai"
 
+attribute "ohai_plugin_test/expected_network_adapter",
+  :display_name => "Network Adapters Expected",
+  :description => "What network adaptors should we expected to find. choose both for instances with both a public and private adapters -- like one EC2.",
+  :required => "recommended",
+  :default => "both",
+  :choice => [ "public","private","both" ],
+  :recipes => [ "dev_cookbooks_test::ohai_plugin_test" ]
 
 attribute "ssh_test/ssh_public_key_expected",
   :display_name => "Input ssh_public_key expected",
@@ -25,7 +33,8 @@ attribute "ssh_test/ssh_public_key_expected",
 attribute "nat_test/nat_routes_expected",
   :display_name => "Input NAT_routes_expected",
   :description => "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
-  :required => "required",
+  :required => "recommended",
+  :defaul => "false", 
   :recipes => [ "dev_cookbooks_test::nat_test" ],
   :type => "string"
 
