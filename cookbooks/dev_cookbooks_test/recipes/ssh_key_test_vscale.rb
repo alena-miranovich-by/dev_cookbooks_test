@@ -8,12 +8,12 @@
 #
 # Verifies that sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorized_keys file
 
-unless node[:platform] == 'windows' || cloud.strip! != "vscale"
-  require '/var/spool/cloud/meta-data'
-
   auth_keys  = "/root/.ssh/authorized_keys"
   test_state = node[:ssh_test][:ssh_public_key_expected]
   cloud = `cat /etc/rightscale.d/cloud`
+
+unless node[:platform] == 'windows' || cloud.strip! != "vscale"
+  require '/var/spool/cloud/meta-data'
 
   ruby_block "Verify that ssh-key exists in authorized_keys" do
     block do
