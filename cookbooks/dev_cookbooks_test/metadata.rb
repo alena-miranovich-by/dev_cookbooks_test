@@ -14,6 +14,7 @@ recipe "dev_cookbooks_test::rs_config_tool", "rs_config test"
 recipe "dev_cookbooks_test::rightlink_cli_tools_test", "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
 recipe "dev_cookbooks_test::rightlink_cli_test_recipe", "Additional recipe-helper to test rightlink cli tool"
 recipe "dev_cookbooks_test::ohai_plugin_test", "ohai"
+recipe "dev_cookbooks_test::rs_ohai_output_test", "rs_ohai output"
 
 attribute "ohai_plugin_test/expected_network_adapter",
   :display_name => "Network Adapters Expected",
