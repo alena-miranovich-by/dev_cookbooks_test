@@ -41,8 +41,11 @@ ruby_block "Test help and version options of RightLink CLI tools" do
  # not_if { platform?('windows') }
 end
 
-test_dir = "/tester"
-test_dir = "C:\\tester" if platform?('windows') 
+if platform?('windows')
+  test_dir = "C:\\tester" if platform?('windows') 
+else 
+  test_dir = "/tester"
+end
 
 directory "#{test_dir}" do
 #  owner "root"
