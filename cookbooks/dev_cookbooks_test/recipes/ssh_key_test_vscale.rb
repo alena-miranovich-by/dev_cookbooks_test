@@ -10,13 +10,14 @@
 
   auth_keys  = "/root/.ssh/authorized_keys"
   test_state = node[:ssh_test][:ssh_public_key_expected]
-  cloud = `cat /etc/rightscale.d/cloud`
+#  cloud = `cat /etc/rightscale.d/cloud`
 
-unless node[:platform] == 'windows' || cloud.strip! != "vscale"
-  require '/var/spool/cloud/meta-data'
+#unless node[:platform] == 'windows' || cloud.strip! != "vscale"
+ # require '/var/spool/cloud/meta-data'
 
   ruby_block "Verify that ssh-key exists in authorized_keys" do
     block do
+      require '/var/spool/cloud/meta-data'
       # Get vScale ssh-key value and verify it with authorized_keys file
       if ENV.key?("VS_SSH_PUBLIC_KEY")
         ssh_key = ENV["VS_SSH_PUBLIC_KEY"]
@@ -34,7 +35,7 @@ unless node[:platform] == 'windows' || cloud.strip! != "vscale"
         exit 101
       end
     end
-    not_if do test_state == 'false' end
+    not_if { test_state == 'false' || platform?('windows') || node[:cloud][:provider].to_s != 'vscale' }
   end
-end
+
 
