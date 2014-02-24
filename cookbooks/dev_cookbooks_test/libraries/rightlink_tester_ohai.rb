@@ -84,7 +84,7 @@ module RightlinkTester
 			# @return @cloud - name of cloud provider
 			# 
 			def get_cloud_provider
-				cloud = `cat /etc/rightscale.d/cloud`
+				cloud = node[:cloud][:provider].to_s
 				cloud.strip!
 				return cloud
 			end
