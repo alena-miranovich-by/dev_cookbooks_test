@@ -22,7 +22,7 @@ log "============ tag_cookbook_path_test =============="
 ruby_block "Query for cookbook path" do
   block do
     Chef::Log.info("Checking server collection for tag...")
-    if tag_exists?(TAG)
+    unless tag_exists?(TAG).empty?
 #    h = node[:server_collection][UUID]
 #    tags = h[h.keys[0]]
 #    Chef::Log.info("Tags:#{tags}")

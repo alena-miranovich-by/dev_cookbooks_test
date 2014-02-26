@@ -27,37 +27,15 @@ class Chef::Resource::RubyBlock
 end
 
 TAG = "rs_agent_dev:reboot=rightlink_test_soft_reboot"
-#UUID = node[:rightscale][:instance_uuid]
-#UUID_TAG = "rs_instance:uuid=#{UUID}"
 
 log "============ soft_reboot_test started =============="
-
-#log "Add instance UUID as a tag: #{UUID_TAG}"
-#`rs_tag --add #{UUID_TAG}`
-# add new function like add, remove tag to the server
-# right_link_tag UUID_TAG
-
-#log "Verify UUID tag exists"
-#wait_for_tag UUID_TAG do
-#  collection_name UUID
-#end
-
-#log "Query servers for the instance tags..."
-#server_collection UUID do
-#  tags UUID_TAG
-#end
 
 # Check query results to see if we have TAG set and look for local facility message at system log
 ruby_block "Query to look for local facility message only if soft_reboot tag was set" do
   block do
     File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages"
     Chef::Log.info("Checking server collection for the #{TAG} tag...")
-    if tag_exists?(TAG) 
-#    h = node[:server_collection][UUID]
- #   tags = h[h.keys[0]]
-  #  Chef::Log.info("Tags: #{tags.inspect}")
-   # result = tags.select { |s| s == TAG }
-    #unless result.empty?
+    unless tag_exists?(TAG).empty? 
       Chef::Log.info("Soft_reboot tag found")
 			output = `cat #{system_log} | grep 'Initiate reboot using local (OS) facility'`
 			if ($?.success?)
@@ -72,13 +50,6 @@ ruby_block "Query to look for local facility message only if soft_reboot tag was
     
   end
 end
-
-#log "Remove tag #{TAG}"
-#`rs_tag --remove #{TAG}`
-# or create function to remove tag 
-#right_link_tag TAG do
-#	action :remove
-#end 
 
 log "============ soft_reboot_test finished ============"
 

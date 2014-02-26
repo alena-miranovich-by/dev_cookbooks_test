@@ -35,28 +35,6 @@ ruby_block "infinite loop checking persistence" do
       count += 1
       Chef::Log.info "Tag still exists after #{count/60} minutes." if (count % 60 == 0)
     end
-=begin
-    resrc = Chef::Resource::ServerCollection.new(COLLECTION_NAME)
-    resrc.tags TAG
-    provider = nil
-    
-    if (Chef::VERSION =~ /0\.9/) # provider signature changed in Chef 0.9
-      provider = Chef::Provider::ServerCollection.new(resrc, @run_context)
-    else 
-      provider = Chef::Provider::ServerCollection.new(node, resrc)
-    end
-
-    count = 0
-    while(1) 
-      provider.send("action_load")
-      h = node[:server_collection][COLLECTION_NAME]
-      tags = h[h.keys[0]]
-      raise "ERROR: tag disappeared!! #{h.to_hash.inspect}" if tags == nil
-      sleep 1
-      count += 1
-      Chef::Log.info "  Tag still exists after #{count/60} minutes." if (count % 60 == 0)
-    end
-=end
   end
 end
   

@@ -15,7 +15,6 @@ class Chef::Resource::RubyBlock
   include RightlinkTester::Utils
 end
 
-#UUID = node[:rightscale][:instance_uuid]
 TEST_RECIPE = "dev_cookbooks_test::rightlink_cli_test_recipe"
 
 

@@ -142,14 +142,14 @@ end
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
 
-Chef::Log.info "Query servers for our tags..."
+#Chef::Log.info "Query servers for our tags..."
 #server_collection UUID do
 #  tags UUID_TAG
 #end
 
 #Used to check for dev tags
 TAG = "test:dev_check=true"
-COLLECTION_NAME = "tag_test"
+#COLLECTION_NAME = "tag_test"
 
 #add_tag(TAG)
 #right_link_tag TAG
@@ -161,12 +161,12 @@ COLLECTION_NAME = "tag_test"
 # Check that chef and ohai log levels are set to info
 ruby_block "chef and ohai log levels are set to info" do
   block do
-
+    
     add_tag(TAG)
     wait_for_tag(TAG, true)
  
     Chef::Log.info("Checking server collection for tag...")
-    if tag_exists?(UUID_TAG)
+    unless tag_exists?(UUID_TAG).empty?
       Chef::Log.info("Tag found!")  
     end  
     
@@ -188,7 +188,7 @@ ruby_block "chef and ohai log levels are set to info" do
     Chef::Log.info("ohai_log_level = #{ohai_log_level}")
     Chef::Log.info("chef_log_level = #{chef_log_level}")
 
-    if tag_exists?("rs_agent_dev")
+    unless tag_exists?("rs_agent_dev").empty?
 =begin
     h = node[:server_collection]["tag_test"]
     tags = h[h.keys[0]]

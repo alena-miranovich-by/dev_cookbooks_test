@@ -13,34 +13,13 @@ class Chef::Resource::RubyBlock
 end
 
 TAG = "rs_agent_dev:break_point=rightlink_test::tag_break_point_test_should_never_run"
-#UUID = node[:rightscale][:instance_uuid]
-#UUID_TAG = "rs_instance:uuid=#{UUID}"
 
 log "============ tag_break_point_test =============="
-=begin
-log "Add instance UUID as a tag: #{UUID_TAG}"
-right_link_tag UUID_TAG
-
-log "Verify tag exists"
-wait_for_tag UUID_TAG do
-  collection_name UUID
-end
-
-log "Query servers for our tags..."
-server_collection UUID do
-  tags UUID_TAG
-end
-=end
 # Check query results to see if we have our TAG set.
 ruby_block "Query for breakpoint" do
   block do
     Chef::Log.info("Checking server collection for tag...")
-#    h = node[:server_collection][UUID]
- #   tags = h[h.keys[0]]
-  #  Chef::Log.info("Tags:#{tags}")
-   # result = tags.select { |s| s == TAG }
-    if tag_exists?(TAG)
-#   unless result.empty?
+    unless tag_exists?(TAG).empty?
       Chef::Log.info(" Tag #{TAG} found.")
       node.set[:devmode_test][:has_breakpoint] = true
       node.set[:devmode_test][:initial_pass] = false if node[:devmode_test][:initial_pass]

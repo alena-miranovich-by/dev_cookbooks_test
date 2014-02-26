@@ -15,25 +15,6 @@
 # rs_config_test:ready_for_test=true - means that all features values changed and ready to be tested
 # rs_config_test:ready_for_test-false - means that all features have been verified, test-case will not run again.
 
-=begin
-UUID = node[:rightscale][:instance_uuid]
-UUID_TAG = "rs_instance:uuid=#{UUID}"
-
-log "Add instance UUID as a tag: #{UUID_TAG}"
-add_tag(UUID_TAG)
-`rs_tag --add #{UUID_TAG}`
-#right_link_tag UUID_TAG
-
-log "Verify UUID tag exists"
-wait_for_tag UUID_TAG do
-  collection_name UUID
-end
-
-log "Query servers for the instance tags..."
-server_collection UUID do
-  tags UUID_TAG
-end
-=end
 class Chef::Resource::RubyBlock
   include RightlinkTester::Utils
 end
@@ -69,18 +50,8 @@ end
 
 ruby_block "Verifies rs_config tool" do
   block do
-#    tag_exists = Proc.new { |tag, uuid|
-#      Chef::Log.info("Checking server collection for the #{tag}..")
-      
-#      tags_hash = node[:server_collection][uuid]
-#      tags = tags_hash[tags_hash.keys[0]]
-#      Chef::Log.info("Tags: #{tags.inspect}")
-#      result = tags.select { |s| s == tag }
-#    }
-
     # before changes:
-    if (!tag_exists?(TAG) and !tag_exists?(TAG_DONE))
-#    if (tag_exists.call(TAG, UUID).empty? and tag_exists.call(TAG_DONE, UUID).empty?)
+    if (tag_exists?(TAG).empty? and tag_exists?(TAG_DONE).empty?)
       # =============== 1. Decommission timeout  =================
       # set decommission_timeout to very small value - 1 second
       decom_timeout = 1
@@ -123,8 +94,7 @@ ruby_block "Verifies rs_config tool" do
       Chef::Log.info("Reboot the instance...")
       `rs_shutdown --reboot -i`
     # after reboot with applying changes
-#    elsif (tag_exists.call(TAG,UUID) and tag_exists.call(TAG_DONE, UUID).empty?)
-     elsif (tag_exists?(TAG) and !tag_exists?(TAG_DONE))
+     elsif (!tag_exists?(TAG).empty? and tag_exists?(TAG_DONE).empty?)
        # reset values to default
       `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
       `rs_config --set #{MOTD_UPD_FEATURE} on`
