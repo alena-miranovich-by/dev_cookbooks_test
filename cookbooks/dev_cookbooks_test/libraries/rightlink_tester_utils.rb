@@ -16,23 +16,15 @@ module RightlinkTester
     #
     def get_rightlink_version
       rightlink_version = Gem::Specification.find_by_name("right_link").version.to_s
-     
-#      unless node[:platform] == 'windows'
-        # get RightLink version under Linux platform
- #       rightlink_version = `cat /etc/rightscale.d/rightscale-release`
-  #    else
-   #     Chef::Log.info("Platform is Windows - don't know which version.")
-    #  end
-     # rightlink_version
     end  
 
     # Gets server tags collection
-    # @param [String] uuid - UUID of this server
     # @return [Array] - tags collection
     #
-    def get_server_tags (uuid) 
-      tags_hash = node[:server_collection][uuid]
-      tags_hash[tags_hash.keys[0]]
+    def get_server_tags 
+      tags_list = `rs_tag --list`
+      # remove unnecessary \n from the tags list 
+      tags_list.gsub(/\n/, " ")
     end
 
     # Checks if provided command work or not at all and returns output
@@ -44,6 +36,60 @@ module RightlinkTester
       output = `#{command}`
       fail("#{command} doesn't work. see output: #{output}.") unless $?.success?
       output
+    end
+
+    # Sets tag to the server
+    # @param [String] tag - the name of tag to be set
+    #
+    def add_tag (tag)
+      `rs_tag --add "#{tag}"`
+    end
+
+    # Removes tag from the server
+    # @param [String] tag - the name of tag to be removed
+    #
+    def remove_tag (tag)
+      `rs_tag --remove "#{tag}"`
+    end
+
+    # Waits for tag to be removed or added during TIMEOUT
+    # @param [String] tag - the name of tag to be checked for the state
+    # @param [bool] should_exists - define state of tag to check: if true - check on tag existence, false - check that tag is absent
+    # 
+    def wait_for_tag (tag, should_exists)
+      require 'timeout'
+      done = false
+        begin
+          status = Timeout::timeout(TIMEOUT) do
+            until done
+              tags = get_server_tags
+              if should_exists
+                done = true if tags.include? "#{tag}"
+              else
+                done = true unless tags.include? "#{tag}"
+              end
+              unless done
+                Chef::Log.info("Waiting for tag exists #{should_exists}. Retry in 10 seconds...")
+                sleep 10
+              end
+            end
+          end
+       rescue Timeout::Error => e
+       fail("=== ERROR === Timed out waiting for tag exists #{should_exists}")
+     end
+    end
+
+    # Checks if tag exists
+    # @param [String] tag - the name of the tag to be checked
+    # @return [bool] tag_exists - returns true if specified tag exists, false if it's absent
+    # 
+    def tag_exists? (tag)
+      tag_exists = false
+      tags = get_server_tags
+      if tags.include? "#{tag}"
+        tag_exists = true
+      end
+      return tag_exists
     end
 
   end
