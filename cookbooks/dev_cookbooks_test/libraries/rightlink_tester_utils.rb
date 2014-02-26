@@ -81,14 +81,15 @@ module RightlinkTester
      end
     end
 
-    # Checks if tag exists
+    # Checks if tag exists.
+    # It's also possible to provide only 'namespace:predicate'
     # @param [String] tag - the name of the tag to be checked
     # @return [bool] tag_exists - returns true if specified tag exists, false if it's absent
     # 
     def tag_exists? (tag)
       tag_exists = false
       tags = get_server_tags
-      if tags.include? "#{tag}"
+      if tags.any? { |s| s.include?(tag) }
         tag_exists = true
       end
       return tag_exists
