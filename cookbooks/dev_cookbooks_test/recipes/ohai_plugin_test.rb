@@ -16,6 +16,10 @@
 # This test also checks is private IP is private and public IP is public
 #
 
+class Chef::Resource::RubyBlock
+  include RightlinkTester::Utils
+end
+
 template_path = ::File.join(::Dir.tmpdir, "ohai_values.log")
 template "/tmp/ohai_values.log" do
   path template_path
@@ -84,6 +88,13 @@ ruby_block "cloud plugins should not be null" do
        raise "=== FAIL === Recipe: ohai_plugin_test DESCRIPTION: ohai ruby plugin: 'provider plugin null'" 
    end
 
+   # Verify that cloud specific node exists
+   if node.attribute?(provider)
+     Chef::Log.info("=== PASS === node[:#{provider}] exists.")
+   else
+     fail("=== FAIL === node[:#{provider}] doesn't exist.")
+   end
+
    # Get input expected_network_adapter and verify network adapters accordingly
    network_adapter = node[:ohai_plugin_test][:expected_network_adapter]
 
@@ -132,25 +143,34 @@ UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
 
 Chef::Log.info "Query servers for our tags..."
-server_collection UUID do
-  tags UUID_TAG
-end
+#server_collection UUID do
+#  tags UUID_TAG
+#end
 
 #Used to check for dev tags
 TAG = "test:dev_check=true"
 COLLECTION_NAME = "tag_test"
 
-right_link_tag TAG
+#add_tag(TAG)
+#right_link_tag TAG
 
-wait_for_tag TAG do
-  collection_name COLLECTION_NAME
-end
+#wait_for_tag TAG do
+#  collection_name COLLECTION_NAME
+#end
 
 # Check that chef and ohai log levels are set to info
 ruby_block "chef and ohai log levels are set to info" do
   block do
 
+    add_tag(TAG)
+    wait_for_tag(TAG, true)
+ 
     Chef::Log.info("Checking server collection for tag...")
+    if tag_exists?(UUID_TAG)
+      Chef::Log.info("Tag found!")  
+    end  
+    
+=begin
     h = node[:server_collection][UUID]
     tags = h[h.keys[0]]
     unless tags.nil? || tags.empty?
@@ -160,20 +180,24 @@ ruby_block "chef and ohai log levels are set to info" do
         Chef::Log.info("Tag found!")
       end
     end
-
+=end
+    
     ohai_log_level = Ohai::Config[:log_level]
     chef_log_level = Chef::Log.logger.level
 
     Chef::Log.info("ohai_log_level = #{ohai_log_level}")
     Chef::Log.info("chef_log_level = #{chef_log_level}")
 
+    if tag_exists?("rs_agent_dev")
+=begin
     h = node[:server_collection]["tag_test"]
     tags = h[h.keys[0]]
     Chef::Log.info("Tags:#{tags}")
     result = tags.select { |s| s == "rs_agent_dev" }
 
-    if result.empty?
 
+    if result.empty?
+=end
       Chef::Log.info("==Dev Tag found==")
 
       if "#{ohai_log_level}" != "1"
@@ -203,14 +227,22 @@ ruby_block "chef and ohai log levels are set to info" do
       Chef::Log.info("=== PASS === Recipe: ohai_plugin_test DESCRIPTION: Chef and Ohai log levels are set to info")
 
     end
-    
+
+    Chef::Log.info "Add our instance UUID as a tag: #{UUID_TAG}"
+    add_tag(UUID_TAG)
+    Chef::Log.info "Verify tag exists"
+    wait_for_tag(UUID_TAG, true)
+
   end
 end
-
+=begin
 Chef::Log.info "Add our instance UUID as a tag: #{UUID_TAG}"
-right_link_tag UUID_TAG
+add_tag(UUID_TAG)
+`rs_tag --add #{UUID_tag}`
+#right_link_tag UUID_TAG
 
 Chef::Log.info "Verify tag exists"
 wait_for_tag UUID_TAG do
   collection_name UUID
 end
+=end

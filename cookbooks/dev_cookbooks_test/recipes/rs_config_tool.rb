@@ -11,13 +11,18 @@
 # managed_login_enable, motd_update, package_repositories_freeze. 
 # Reboot will be performed two times during test-case: 
 # first one to apply all changes and the second one to reset values to default.
-#
+# During executing test-case tags could be set:
+# rs_config_test:ready_for_test=true - means that all features values changed and ready to be tested
+# rs_config_test:ready_for_test-false - means that all features have been verified, test-case will not run again.
 
+=begin
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
 
 log "Add instance UUID as a tag: #{UUID_TAG}"
-right_link_tag UUID_TAG
+add_tag(UUID_TAG)
+`rs_tag --add #{UUID_TAG}`
+#right_link_tag UUID_TAG
 
 log "Verify UUID tag exists"
 wait_for_tag UUID_TAG do
@@ -27,6 +32,10 @@ end
 log "Query servers for the instance tags..."
 server_collection UUID do
   tags UUID_TAG
+end
+=end
+class Chef::Resource::RubyBlock
+  include RightlinkTester::Utils
 end
 
 log "============ rs_config_tool test started =============="
@@ -38,13 +47,19 @@ MANAGED_LOGIN_FEATURE = "managed_login_enable"
 MOTD_UPD_FEATURE = "motd_update"
 REPO_FREEZE_FEATURE = "package_repositories_freeze"
 MOTD_SYSTEM_PATH = "/etc/motd"
-MOTD_MSG_ORIGINAL = "/tmp/motd_original"
-MOTD_MSG_TEST = "/tmp/rs_config_motd"
-TIMESTAMP = "/tmp/timestamp"
+MOTD_MSG_ORIGINAL = "/tester/motd_original"
+MOTD_MSG_TEST = "/tester/rs_config_motd"
+TIMESTAMP = "/tester/timestamp"
 TEST_MESSAGE = "rs_config test message"
 
-
-template "/tmp/rs_config_motd" do
+directory "/tester" do
+  owner "root"
+  group "root"
+  mode 0755
+  action :create
+end
+ 
+template "#{MOTD_MSG_TEST}" do
   source "rs_config_motd.erb"
   mode 0440
   owner "root"
@@ -54,16 +69,18 @@ end
 
 ruby_block "Verifies rs_config tool" do
   block do
-    tag_exists = Proc.new { |tag, uuid|
-      Chef::Log.info("Checking server collection for the #{tag}..")
-      tags_hash = node[:server_collection][uuid]
-      tags = tags_hash[tags_hash.keys[0]]
-      Chef::Log.info("Tags: #{tags.inspect}")
-      result = tags.select { |s| s == tag }
-    }
+#    tag_exists = Proc.new { |tag, uuid|
+#      Chef::Log.info("Checking server collection for the #{tag}..")
+      
+#      tags_hash = node[:server_collection][uuid]
+#      tags = tags_hash[tags_hash.keys[0]]
+#      Chef::Log.info("Tags: #{tags.inspect}")
+#      result = tags.select { |s| s == tag }
+#    }
 
-    # before changes and no any tags set:
-    if (tag_exists.call(TAG, UUID).empty? and tag_exists.call(TAG_DONE, UUID).empty?)
+    # before changes:
+    if (!is_tag_exists?(TAG) and !is_tag_exists?(TAG_DONE))
+#    if (tag_exists.call(TAG, UUID).empty? and tag_exists.call(TAG_DONE, UUID).empty?)
       # =============== 1. Decommission timeout  =================
       # set decommission_timeout to very small value - 1 second
       decom_timeout = 1
@@ -86,6 +103,7 @@ ruby_block "Verifies rs_config tool" do
       `rs_config --set #{MOTD_UPD_FEATURE} false`
       $?.success? ? Chef::Log.info("MOTD_update feature was disabled.") : fail("MOTD_update feature was not disabled. Something went wrong.")
       # save original MOTD file
+      File.exists?("/etc/motd.tail") ? MOTD_SYSTEM_PATH = "/etc/motd.tail" : MOTD_SYSTEM_PATH = "/etc/motd"
       FileUtils.cp(MOTD_SYSTEM_PATH, MOTD_MSG_ORIGINAL)
       # Overwrite motd file to test motd
       FileUtils.cp(MOTD_MSG_TEST, MOTD_SYSTEM_PATH)
@@ -102,24 +120,26 @@ ruby_block "Verifies rs_config tool" do
       `echo "#{timestamp}" > #{TIMESTAMP}`
       `logger "#{TEST_MESSAGE} #{timestamp}"`
       # reboot the instance
+      Chef::Log.info("Reboot the instance...")
       `rs_shutdown --reboot -i`
     # after reboot with applying changes
-    elsif (tag_exists.call(TAG, UUID) and tag_exists.call(TAG_DONE, UUID).empty?)
+#    elsif (tag_exists.call(TAG,UUID) and tag_exists.call(TAG_DONE, UUID).empty?)
+     elsif (is_tag_exists?(TAG) and !is_tag_exists?(TAG_DONE)
        # reset values to default
       `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
       `rs_config --set #{MOTD_UPD_FEATURE} on`
       `rs_config --set #{REPO_FREEZE_FEATURE} on`
       `rs_config --set #{DECOM_TIMEOUT_FEATURE} 180`
+      Chef::Log.info("All features have been set to default values. To apply changes reboot is required.")
       # ========== Decommission timeout feature =================
       Chef::Log.info("Tag #{TAG} exists. Checking for the message in system logs..")
       # define existing system logs depends on distribution
       File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages"
       `cat #{system_log} | grep 'Failed to decommission in less than 0 minutes, forcing shutdown'`
-      $?.success? ? Chef::Log.info("==== PASS ==== Decommission_timeout feature verified.") : fail("==== FAIL ==== System log doesn't contain decommission message.")
+      $?.success? ? Chef::Log.info("==== PASSED ==== Decommission_timeout feature verified.") : fail("==== FAILED ==== System log doesn't contain decommission message.")
 
       # ===== Managed_login_enable, MOTD_update, package_repositories_freeze ====
       timestamp = File.open(TIMESTAMP) {|f| f.readline}
-      Chef::Log.info("#{timestamp.rstrip.inspect}")
       fl = 0
       File.open(system_log, "r").each_line do |line|
         if fl != 1
@@ -138,17 +158,20 @@ ruby_block "Verifies rs_config tool" do
       Chef::Log.info("=== PASSED === managed_login and repo_freeze features are verified.")
 
       # ======= MOTD_update ======
-      # compare original MOTD message with existing in /etc/motd - files must be different
-      FileUtils.compare_file(MOTD_MSG_ORIGINAL, MOTD_SYSTEM_PATH) ? fail("=== FAIL === MOTD messages are identical") : Chef::Log.info("===PASSED=== MOTD messages are different as it was expected")
+      # compare test MOTD message with current in /etc/motd. Files should identical
+      File.exists?("/etc/motd.tail") ? MOTD_SYSTEM_PATH = "/etc/motd.tail" : MOTD_SYSTEM_PATH = "/etc/motd"
+      FileUtils.compare_file(MOTD_MSG_TEST, MOTD_SYSTEM_PATH) ? Chef::Log.info("===PASSED=== Test and current system MOTD messages are identical.") : fail("=== FAILED === Test and current system MOTD messages are different.")
 
       Chef::Log.info("=== PASSED rs_config test === All features are verified")
       `rs_tag -a "#{TAG_DONE}"`
       # reboot the instance to reset parameters
+      Chef::Log.info("Reboot the instance...")
       `rs_shutdown --reboot -i`
     end
-    
-  not_if do platform?('windows') end
-  end
+
+  end    
+  not_if { platform?('windows') }
 end
 
 log "============ rs_config_tool test finished ============"
+
