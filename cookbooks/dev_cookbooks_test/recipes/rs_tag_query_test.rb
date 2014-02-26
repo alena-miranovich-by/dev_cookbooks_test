@@ -42,7 +42,7 @@ ruby_block "Verify rs_tag --query functionality" do
 
     Chef::Log.info("RightLink version is #{rightlink_version}")
 
-    if rightlink_version.match?('6.*?')
+    if rightlink_version.match('^6.*$')
 
       # in RightLink6 every tag should be quoted if it contains spaces, if it doesn't contain - no necessary to quote. 
       expected_output = ':tags=>["user:name=tester", "test-tag with spaces", "test-tag_without_spaces", "hello:world=hello everyone"]'
