@@ -15,12 +15,12 @@ recipe "dev_cookbooks_test::rightlink_cli_tools_test", "Test to verify RightLink
 recipe "dev_cookbooks_test::rightlink_cli_test_recipe", "Additional recipe-helper to test rightlink cli tool"
 recipe "dev_cookbooks_test::ohai_plugin_test", "ohai"
 recipe "dev_cookbooks_test::rs_ohai_output_test", "rs_ohai output"
-recipe "dev_cookbooks_test::proxy_client_setup.rb", "??"
-recipe "dev_cookbooks_test::rs_tag_query_test.rb", "rs_tag"
-recipe "dev_cookbooks_test::soft_reboot_test.rb", "soft_Reboot"
-recipe "dev_cookbooks_test::tag_break_point_test.rb", "???"
-recipe "dev_cookbooks_test::tag_cookbook_path_test.rb", "???"
-recipe "dev_cookbooks_test::tag_persistence_test.rb", "??"
+recipe "dev_cookbooks_test::proxy_client_setup", "??"
+recipe "dev_cookbooks_test::rs_tag_query_test", "rs_tag"
+recipe "dev_cookbooks_test::soft_reboot_test", "soft_Reboot"
+recipe "dev_cookbooks_test::tag_break_point_test", "???"
+recipe "dev_cookbooks_test::tag_cookbook_path_test", "???"
+recipe "dev_cookbooks_test::tag_persistence_test", "??"
 
 
 attribute "ohai_plugin_test/expected_network_adapter",
