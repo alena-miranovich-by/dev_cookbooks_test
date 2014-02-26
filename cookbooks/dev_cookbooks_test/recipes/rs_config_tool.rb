@@ -170,7 +170,7 @@ ruby_block "Verifies rs_config tool" do
     end
 
   end    
-  not_if { platform?('windows') }
+  not_if { platform?('windows') || !get_rightlink_version.match('^6.*$') }
 end
 
 log "============ rs_config_tool test finished ============"
