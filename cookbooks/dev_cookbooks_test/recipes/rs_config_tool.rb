@@ -79,7 +79,7 @@ ruby_block "Verifies rs_config tool" do
 #    }
 
     # before changes:
-    if (!is_tag_exists?(TAG) and !is_tag_exists?(TAG_DONE))
+    if (!tag_exists?(TAG) and !tag_exists?(TAG_DONE))
 #    if (tag_exists.call(TAG, UUID).empty? and tag_exists.call(TAG_DONE, UUID).empty?)
       # =============== 1. Decommission timeout  =================
       # set decommission_timeout to very small value - 1 second
@@ -124,7 +124,7 @@ ruby_block "Verifies rs_config tool" do
       `rs_shutdown --reboot -i`
     # after reboot with applying changes
 #    elsif (tag_exists.call(TAG,UUID) and tag_exists.call(TAG_DONE, UUID).empty?)
-     elsif (is_tag_exists?(TAG) and !is_tag_exists?(TAG_DONE)
+     elsif (tag_exists?(TAG) and !tag_exists?(TAG_DONE))
        # reset values to default
       `rs_config --set #{MANAGED_LOGIN_FEATURE} on`
       `rs_config --set #{MOTD_UPD_FEATURE} on`
