@@ -75,7 +75,7 @@ ruby_block "Test rs_run_right_script and rs_run_recipe tools" do
     # --recipient_tags TAG_LIST
     `rs_tag --add "test:ping=reciever"`
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' --recipient_tags 'test:ping=reciever'")
-    fail("=== FAILED === rs_run_recipe -n '#{TEST_RECIPE}' --recipient_tags 'test:ping=reciever' doesn't work") unless result.include?("Request processed successfully") 
+    fail("=== FAILED === rs_run_recipe -n '#{TEST_RECIPE}' --recipient_tags 'test:ping=reciever' doesn't work") unless result.include?("Request sent successfully") 
     result = is_cmd_works?("rs_run_recipe -n '#{TEST_RECIPE}' -r 'tag1 tag2' -v")
     fail("=== FAILED === --recipient_tags have not been parsed correctly") unless result.include?(':tags=>["tag1", "tag2"]')
     Chef::Log.info("=== PASSED === rs_run_right_script / recipe will passed --identity, --recipient_tags and --json options.")
