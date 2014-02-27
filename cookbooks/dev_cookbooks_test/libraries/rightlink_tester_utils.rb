@@ -66,9 +66,9 @@ module RightlinkTester
             until done
               tags = get_server_tags
               if should_exists
-                done = true if tags.include? "#{tag}"
+                done = true unless tag_exists?(tag).empty?
               else
-                done = true unless tags.include? "#{tag}"
+                done = true if tag_exists?(tag).empty?
               end
               unless done
                 Chef::Log.info("Waiting for tag exists #{should_exists}. Retry in 10 seconds...")
