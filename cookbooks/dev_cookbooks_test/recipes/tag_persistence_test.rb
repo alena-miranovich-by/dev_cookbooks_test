@@ -30,7 +30,6 @@ ruby_block "infinite loop checking persistence" do
     count = 0
     while(1)
       tags = get_server_tags
-      wait_for_tag(TAG, falise)
       raise "ERROR: tags dissappeared!! #{tags}" if tags == nil
       unless tag_exists?(TAG).empty?
         sleep 1
