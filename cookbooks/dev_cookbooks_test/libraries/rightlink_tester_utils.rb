@@ -26,7 +26,7 @@ module RightlinkTester
     def get_server_tags 
       tags_list = `rs_tag --list`
       # remove unnecessary \n from the tags list 
-      tags_list.gsub(/\n/, " ")
+      tags_list.gsub(/\n/, " ").split(",")
     end
 
     # Checks if provided command work or not at all and returns output
@@ -89,10 +89,14 @@ module RightlinkTester
     def tag_exists? (tag)
       found_tag = ""
       tags = get_server_tags
-      tags.any? do |t| 
-        if t.include?(tag)
-          found_tag = t
+      if tags.is_a? Array
+        tags.each do |t| 
+          if t.include?(tag)
+            found_tag = t
+          end
         end
+      else 
+        fail("ERROR: list of tags is not Array as it was expected")
       end
       return found_tag.gsub(/\n/, "").gsub(/\"/, "").strip
     end
