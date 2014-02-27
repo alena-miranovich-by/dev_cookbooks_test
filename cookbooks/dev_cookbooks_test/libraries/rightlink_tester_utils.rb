@@ -10,7 +10,7 @@
 module RightlinkTester
   module Utils 
 
-    TIMEOUT = 4 * 60
+    TIMEOUT = 2 * 60
     # Creates new Utils object.
 
     # Gets RightLink version (for RL5.9+ only) 
