@@ -30,11 +30,16 @@ ruby_block "infinite loop checking persistence" do
     count = 0
     while(1)
       tags = get_server_tags
-      wait_for_tag(TAG, false)
+      wait_for_tag(TAG, falise)
       raise "ERROR: tags dissappeared!! #{tags}" if tags == nil
-      sleep 1
-      count += 1
-      Chef::Log.info "Tag still exists after #{count/60} minutes." if (count % 60 == 0)
+      unless tag_exists?(TAG).empty?
+        sleep 1
+        count += 1
+        Chef::Log.info "Tag still exists after #{count/60} minutes." if (count % 60 == 0)
+      else 
+        Chef::Log.info "Tag doesn't exist" 
+        exit 0
+      end
     end
   end
 end
