@@ -14,7 +14,7 @@ ruby_block "Find tag" do
     Chef::Log.info("Checking server collection for tag...")
     result = tag_exists?(SERVER_TAG)
     unless result.empty?
-      Chef::Log.info("  Tag found!  Found #{reisult}")
+      Chef::Log.info("  Tag found!  Found #{result}")
       server_ip=String.new(result.split('=')[1])
       server_ip[0,SERVER_TAG.length+1]=""
       $NEW_TAG = "rs_agent:http_proxy=#{server_ip}"
