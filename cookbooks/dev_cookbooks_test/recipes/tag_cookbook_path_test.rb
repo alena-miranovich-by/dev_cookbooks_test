@@ -29,7 +29,7 @@ ruby_block "Query for cookbook path" do
 #    result = tags.select { |s| s == TAG }
 #    unless result.empty?
       Chef::Log.info("  Tag found!")
-      node[:devmode_test][:loaded_custom_cookbooks] = true
+      node.default[:devmode_test][:loaded_custom_cookbooks] = true
     else
       Chef::Log.info("  No tag found -- set and reboot!")
     end
