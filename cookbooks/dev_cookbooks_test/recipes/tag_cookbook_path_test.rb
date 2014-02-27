@@ -1,8 +1,6 @@
 
 COOKBOOK_PATH = "/root/my_cookbooks"
 TAG = "rs_agent_dev:cookbooks_path=#{COOKBOOK_PATH}/cookbooks"
-#UUID = node[:rightscale][:instance_uuid]
-#UUID_TAG = "rs_instance:uuid=#{UUID}"
 
 class Chef::Resource::RubyBlock
   include RightlinkTester::Utils
@@ -10,24 +8,10 @@ end
 
 log "============ tag_cookbook_path_test =============="
 
-#log "Add our instance UUID as a tag: #{UUID_TAG}"
-#right_link_tag UUID_TAG
-
-#log "Query servers for our tags..."
-#server_collection UUID do
- # tags UUID_TAG
-#end
-
-# Check query results to see if we have our TAG set.
 ruby_block "Query for cookbook path" do
   block do
     Chef::Log.info("Checking server collection for tag...")
     unless tag_exists?(TAG).empty?
-#    h = node[:server_collection][UUID]
-#    tags = h[h.keys[0]]
-#    Chef::Log.info("Tags:#{tags}")
-#    result = tags.select { |s| s == TAG }
-#    unless result.empty?
       Chef::Log.info("  Tag found!")
       node.default[:devmode_test][:loaded_custom_cookbooks] = true
     else
@@ -40,18 +24,22 @@ end
 unless node[:devmode_test][:loaded_custom_cookbooks]
   `rs_tag --add #{TAG}`
 end
-#right_link_tag TAG do
-#  not_if do node[:devmode_test][:loaded_custom_cookbooks] end
-#end
 
 # ...copy test cookbooks to COOKBOOK_PATH, then...
-ruby "copy this repo" do
-  not_if do node[:devmode_test][:loaded_custom_cookbooks] end
-  code <<-EOH
+ruby_block "copy this repo" do
+  block do 
     Chef::Log.info "Rebooting so coobook_path tag will take affect."
-    ::FileUtils.mkdir("#{COOKBOOK_PATH}")
-    ::FileUtils.cp_r("#{::File.join(File.dirname(__FILE__), "..", "..", "..","*")}", "#{COOKBOOK_PATH}")
-  EOH
+    FileUtils.mkdir("#{COOKBOOK_PATH}")
+    FileUtils.cp_r("#{::File.join(File.dirname(__FILE__), "..", "..", "..","*")}", "#{COOKBOOK_PATH}")
+#ruby "copy this repo" do
+ # not_if do node[:devmode_test][:loaded_custom_cookbooks] end
+ # code <<-EOH
+ #   Chef::Log.info "Rebooting so coobook_path tag will take affect."
+ #   ::FileUtils.mkdir("#{COOKBOOK_PATH}")
+ #   ::FileUtils.cp_r("#{::File.join(File.dirname(__FILE__), "..", "..", "..","*")}", "#{COOKBOOK_PATH}")
+ # EOH
+  end
+  not_if do node[:devmode_test][:loaded_custom_cookbooks] end
 end
 
 #TODO: add a reboot count check and fail if count > 3
