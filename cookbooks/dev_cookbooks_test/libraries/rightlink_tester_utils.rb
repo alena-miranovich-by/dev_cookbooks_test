@@ -90,7 +90,7 @@ module RightlinkTester
       found_tag = ""
       tags = get_server_tags
       tags.any? do |t| 
-        if s.include?(tag)
+        if t.include?(tag)
           found_tag = t
         end
       end
