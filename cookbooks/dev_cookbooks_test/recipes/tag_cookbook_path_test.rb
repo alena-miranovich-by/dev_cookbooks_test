@@ -30,7 +30,7 @@ ruby_block "copy this repo" do
   block do 
     Chef::Log.info "Rebooting so coobook_path tag will take affect."
     FileUtils.mkdir("#{COOKBOOK_PATH}")
-    FileUtils.cp_r("#{::File.join(File.dirname(__FILE__), "..", "..", "..","*")}", "#{COOKBOOK_PATH}")
+    FileUtils.cp_r("#{File.dirname(__FILE__)}", "#{COOKBOOK_PATH}")
 #ruby "copy this repo" do
  # not_if do node[:devmode_test][:loaded_custom_cookbooks] end
  # code <<-EOH
