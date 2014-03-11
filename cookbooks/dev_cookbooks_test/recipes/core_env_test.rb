@@ -20,7 +20,9 @@ directory "#{test_dir}" do
   action :create
 end
 
-template "#{test_dir}/core_env.log" do
+Chef::Log.info "#{template_path}"
+
+template "#{template_path}" do
   source "core_env.erb"
   path template_path
   action :create
