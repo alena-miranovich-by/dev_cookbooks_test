@@ -21,6 +21,7 @@ recipe "dev_cookbooks_test::soft_reboot_test", "soft_Reboot"
 recipe "dev_cookbooks_test::tag_break_point_test", "???"
 recipe "dev_cookbooks_test::tag_cookbook_path_test", "???"
 recipe "dev_cookbooks_test::tag_persistence_test", "??"
+recipe "dev_cookbooks_test::core_env_test", "core env test"
 
 
 attribute "ohai_plugin_test/expected_network_adapter",
