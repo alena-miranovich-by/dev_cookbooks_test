@@ -21,7 +21,7 @@ class Chef::Resource::RubyBlock
 end
 
 template_path = ::File.join(::Dir.tmpdir, "ohai_values.log")
-template "/tmp/ohai_values.log" do
+template "#{template_path}" do
   path template_path
   source "ohai_values.erb"
   action :create
@@ -38,6 +38,7 @@ ruby_block "ruby_bin should not point to sandbox" do
       Chef::Log.info("=== PASS === Recipe: ohai_plugin_test DESCRIPTION: ruby_bin should not point to sandbox")
     end
   end
+  not_if { get_rightlink_version.match('^6.*$') }
 end
 
 # Check that chef is not using sandboxed gems -- this is fixed by our custom ruby provider
@@ -49,6 +50,7 @@ ruby_block "gems_dir should not point to sandbox" do
       Chef::Log.info("=== PASS === Recipe: ohai_plugin_test DESCRIPTION: gems_dir should not point to sandbox")
     end
   end
+  not_if { get_rightlink_version.match('^6.*$') }
 end
 
 # Check that Cloud Plugins are not null
@@ -100,6 +102,9 @@ ruby_block "cloud plugins should not be null" do
 
    is_private_ip = Proc.new { |ip|
      is_private = false
+     if ip.is_a? Array
+       ip = ip[0].to_s
+     end
      # check if provided ip is valid ipv4 address
      if ip =~ /^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/
        private_regexp = /\A(10\.|192\.168\.|172\.1[6789]\.|172\.2.\.|172\.3[01]\.)/
@@ -130,7 +135,7 @@ ruby_block "cloud plugins should not be null" do
      raise "=== FAIL === Private IP #{local_ipv4} is not private." unless is_private_ip.call(local_ipv4)
    else
      Chef::Log.info "Input has not expected value: #{network_adapter}."
-     Kernel::abort("Input was not set correctly: test was not completed.")
+     fail("Input was not set correctly: test was not completed.")
    end
    
    Chef::Log.info("=== PASS === Recipe: ohai_plugin_test DESCRIPTION: Cloud Plugins")
@@ -142,21 +147,8 @@ end
 UUID = node[:rightscale][:instance_uuid]
 UUID_TAG = "rs_instance:uuid=#{UUID}"
 
-#Chef::Log.info "Query servers for our tags..."
-#server_collection UUID do
-#  tags UUID_TAG
-#end
-
 #Used to check for dev tags
 TAG = "test:dev_check=true"
-#COLLECTION_NAME = "tag_test"
-
-#add_tag(TAG)
-#right_link_tag TAG
-
-#wait_for_tag TAG do
-#  collection_name COLLECTION_NAME
-#end
 
 # Check that chef and ohai log levels are set to info
 ruby_block "chef and ohai log levels are set to info" do
@@ -170,18 +162,6 @@ ruby_block "chef and ohai log levels are set to info" do
       Chef::Log.info("Tag found!")  
     end  
     
-=begin
-    h = node[:server_collection][UUID]
-    tags = h[h.keys[0]]
-    unless tags.nil? || tags.empty?
-      Chef::Log.info("Tags:#{tags}")
-      result = tags.select { |s| s == UUID_TAG }
-      unless result.empty?
-        Chef::Log.info("Tag found!")
-      end
-    end
-=end
-    
     ohai_log_level = Ohai::Config[:log_level]
     chef_log_level = Chef::Log.logger.level
 
@@ -189,15 +169,6 @@ ruby_block "chef and ohai log levels are set to info" do
     Chef::Log.info("chef_log_level = #{chef_log_level}")
 
     unless tag_exists?("rs_agent_dev").empty?
-=begin
-    h = node[:server_collection]["tag_test"]
-    tags = h[h.keys[0]]
-    Chef::Log.info("Tags:#{tags}")
-    result = tags.select { |s| s == "rs_agent_dev" }
-
-
-    if result.empty?
-=end
       Chef::Log.info("==Dev Tag found==")
 
       if "#{ohai_log_level}" != "1"
@@ -235,14 +206,4 @@ ruby_block "chef and ohai log levels are set to info" do
 
   end
 end
-=begin
-Chef::Log.info "Add our instance UUID as a tag: #{UUID_TAG}"
-add_tag(UUID_TAG)
-`rs_tag --add #{UUID_tag}`
-#right_link_tag UUID_TAG
 
-Chef::Log.info "Verify tag exists"
-wait_for_tag UUID_TAG do
-  collection_name UUID
-end
-=end

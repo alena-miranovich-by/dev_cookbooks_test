@@ -10,16 +10,6 @@
 
 template_path = ::File.join(::Dir.tmpdir, "core_env.log")
 
-test_dir = if platform?('windows') 
-  "C:\\tester"
-else 
-  "/tester"
-end
-
-directory "#{test_dir}" do
-  action :create
-end
-
 Chef::Log.info "#{template_path}"
 
 template "#{template_path}" do
