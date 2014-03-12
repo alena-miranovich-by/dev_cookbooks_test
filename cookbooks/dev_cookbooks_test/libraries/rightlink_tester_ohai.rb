@@ -27,9 +27,12 @@ module RightlinkTester
 				res = $?.success?
 				if (res)
           Chef::Log.info("#{output}")
-					output = `echo '#{output}' | grep -v WARN` 
-          output = `echo '#{output}' | grep -v 'Setting log level'`
-#Mar 12 10:22:26 RightAgent[2428]: [setup] Setting log level to INFO
+          [/^.*WARN.*\n/, /^.*Setting log level.*\n/].each do |regexp|
+            output.gsub!(regexp, "")
+          end
+
+					#output = `echo '#{output}' | grep -v WARN` 
+          #output = `echo '#{output}' | grep -v 'Setting log level'`
 					output_json = JSON.load(output.strip!)
 					
 					hash_output = Hash.new
