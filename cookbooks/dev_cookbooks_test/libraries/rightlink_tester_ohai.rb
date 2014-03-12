@@ -26,7 +26,8 @@ module RightlinkTester
 				output = `#{command} 2>&1` # redirect output to catch 'missing attribute' error
 				res = $?.success?
 				if (res)
-					output = `echo '#{output}' | grep -v WARN`
+					output = `echo '#{output}' | grep -v WARN | grep -v 'Setting log level'` 
+#Mar 12 10:22:26 RightAgent[2428]: [setup] Setting log level to INFO
 					output_json = JSON.load(output.strip!)
 					
 					hash_output = Hash.new
