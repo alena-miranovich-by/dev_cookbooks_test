@@ -12,6 +12,7 @@
 
 class Chef::Recipe
 	include RightlinkTester::Ohai::Helper
+  inlude RightlinkTester::Utils
 end
 
 @missing_clouds = [ "cloudstack", "azure", "softlayer", "vscale"]
