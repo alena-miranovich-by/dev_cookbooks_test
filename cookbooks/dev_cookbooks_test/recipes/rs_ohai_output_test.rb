@@ -20,8 +20,11 @@ end
 @cloud          = get_cloud_provider
 @result         = 0
 
+rl_version = get_rightlink_version
 
-if @missing_clouds.include? @cloud
+if rl_version.match('^6.*$')
+
+ if @missing_clouds.include? @cloud
  # true => missing cloud
   # cloud is missing. Will not compare rs_ohai and sandboxed ohai output. 
   # Just check if rs_ohai contains necessary attributes
@@ -30,8 +33,8 @@ if @missing_clouds.include? @cloud
   fail("=== FAILED === Cloud attribute is absent for #{@cloud} cloud!") if cloud_attribute.nil?
   fail("=== FAILED === #{@cloud} attribute is absent for #{@cloud} cloud!") if cloud_specific_attribute.nil? 
   Chef::Log.info("=== PASSED === cloud and #{@cloud} attributes are verified on existance")
-else 
-# false => supported cloud
+ else 
+ # false => supported cloud
   # current cloud is in list of supported clouds. It means that it should have the same values as sandboxed ohai plugin
   # 1. Verify that "cloud" output from rs_ohai has the same set of keys as from original ohai plugin
   option = "cloud"
@@ -87,5 +90,8 @@ else
   if @result > 0
 	  raise "=== TEST FAILED === outputs are not matched: see log above."
   end
+ end
+else
+  Chef::Log.info("RightLink is not 6.0+. Will not run this test")
 end
 
