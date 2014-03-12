@@ -16,7 +16,11 @@ class Chef::Recipe
 end
 
 @missing_clouds = [ "cloudstack", "azure", "softlayer", "vscale"]
-@ohai           = "/opt/rightscale/sandbox/bin/ohai"
+if platform?('windows')
+  @ohai         = "C:\Program Files (x86)\RightScale\RightLink\sandbox\ruby\bin\ohai"
+else
+  @ohai         = "/opt/rightscale/sandbox/bin/ohai"
+end
 @rs_ohai        = "rs_ohai"
 @cloud          = get_cloud_provider
 @result         = 0
@@ -29,6 +33,7 @@ if rl_version.match('^6.*$')
  # true => missing cloud
   # cloud is missing. Will not compare rs_ohai and sandboxed ohai output. 
   # Just check if rs_ohai contains necessary attributes
+  Chef::Log.info("#{@ohai.inspect}")
   cloud_attribute = get_node_attributes(@rs_ohai, "cloud")
   cloud_specific_attribute = get_node_attributes(@rs_ohai, @cloud)
   fail("=== FAILED === Cloud attribute is absent for #{@cloud} cloud!") if cloud_attribute.nil?
