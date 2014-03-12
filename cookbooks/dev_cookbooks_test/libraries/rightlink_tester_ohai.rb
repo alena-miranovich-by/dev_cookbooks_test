@@ -26,6 +26,7 @@ module RightlinkTester
 				output = `#{command} 2>&1` # redirect output to catch 'missing attribute' error
 				res = $?.success?
 				if (res)
+          Chef::Log.info("#{output}")
 					output = `echo '#{output}' | grep -v WARN` 
           output = `echo '#{output}' | grep -v 'Setting log level'`
 #Mar 12 10:22:26 RightAgent[2428]: [setup] Setting log level to INFO
