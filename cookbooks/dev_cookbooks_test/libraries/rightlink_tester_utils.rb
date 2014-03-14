@@ -106,14 +106,7 @@ module RightlinkTester
     # 
     def get_system_log
       if platform?('windows')
-        if File.exists?('C:\ProgramData\RightScale\log\rs-instance-583a2bfb0aae9be148b4b5d64694b689733f99b4-13819809003.txt') 
-          Chef::Log.info "exists"
-        end
- if File.exists?("C:\ProgramData\RightScale\log\rs-instance-583a2bfb0aae9be148b4b5d64694b689733f99b4-13819809003.txt")
-          Chef::Log.info "exists2"
-        end
-
-        Chef::Log.info "#{Dir.glob('C:\ProgramData\RightScale\log\rs_instance-*.txt')}"
+        Chef::Log.info "#{Dir.glob("C:/ProgramData/RightScale/log/rs-instance*.log")}"
         return "#{Dir.glob('C:\ProgramData\RightScale\log\rs_instance-*.txt')}"
       else 
         File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages" 
