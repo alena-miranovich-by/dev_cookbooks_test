@@ -33,12 +33,15 @@ log "============ soft_reboot_test started =============="
 # Check query results to see if we have TAG set and look for local facility message at system log
 ruby_block "Query to look for local facility message only if soft_reboot tag was set" do
   block do
-    File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages"
+    
+#    File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages"
     Chef::Log.info("Checking server collection for the #{TAG} tag...")
     unless tag_exists?(TAG).empty? 
       Chef::Log.info("Soft_reboot tag found")
-			output = `cat #{system_log} | grep 'Initiate reboot using local (OS) facility'`
-			if ($?.success?)
+      if check_for_the_message("Initiate reboot using local (OS) facility")
+      
+			#output = `cat #{system_log} | grep 'Initiate reboot using local (OS) facility'`
+			#if ($?.success?)
 				Chef::Log.info("==== PASS ==== Soft_reboot verified")
 			else
 				raise("==== FAIL ==== System log doesn't contain necessary soft_reboot message")

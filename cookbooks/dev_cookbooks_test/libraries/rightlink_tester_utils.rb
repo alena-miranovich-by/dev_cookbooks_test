@@ -101,6 +101,32 @@ module RightlinkTester
       return found_tag.gsub(/\n/, "").gsub(/\"/, "").strip
     end
 
+    # Gets system log path depends on platform
+    # @return [String] path - system log path
+    # 
+    def get_system_log
+      if platform?('windows')
+        Chef::Log.info "#{Dir.glob("#{ENV['ProgramData']}\RightScale\log\rs_instance-*.txt")}"
+        return "#{Dir.glob("#{ENV['ProgramData']}\RightScale\log\rs_instance-*.txt")}"
+      else 
+        File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages" 
+        return system_log
+      end
+    end
+
+    # Checks system log for specific line or message
+    # @param [String] line - provide line to verify on existance
+    # @return [bool] exists - returns true if provided line exists in system log, otherwise returns false
+    #
+    def check_for_the_message (line) 
+      exists = false
+      system_log = get_system_log
+      if File.readlines(system_log).grep(/#{line}/).any? 
+        exists = true
+      end
+      return exists 
+    end
+
   end
 end
 
