@@ -38,7 +38,7 @@ ruby_block "Query to look for local facility message only if soft_reboot tag was
     Chef::Log.info("Checking server collection for the #{TAG} tag...")
     unless tag_exists?(TAG).empty? 
       Chef::Log.info("Soft_reboot tag found")
-      if check_for_the_message("Initiate reboot using local (OS) facility")
+      if check_for_the_message(/Initiate reboot using local \(OS\) facility/)
       
 			#output = `cat #{system_log} | grep 'Initiate reboot using local (OS) facility'`
 			#if ($?.success?)

@@ -115,13 +115,14 @@ module RightlinkTester
     end
 
     # Checks system log for specific line or message
-    # @param [String] line - provide line to verify on existance
+    # @param [String] line - provide line to verify on existance as regexp
+    # (e.g /string to find/) with escaping all specific characters
     # @return [bool] exists - returns true if provided line exists in system log, otherwise returns false
     #
     def check_for_the_message (line) 
       exists = false
       system_log = get_system_log
-      if File.readlines(system_log).grep(/#{line}/).any? 
+      if File.readlines(system_log).grep(line).any? 
         exists = true
       end
       return exists 
