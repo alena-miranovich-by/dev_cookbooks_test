@@ -29,15 +29,23 @@ MOTD_UPD_FEATURE = "motd_update"
 REPO_FREEZE_FEATURE = "package_repositories_freeze"
 MOTD_SYSTEM_PATH = "/etc/motd"
 MOTD_MSG_ORIGINAL = "/tester/motd_original"
-MOTD_MSG_TEST = "/tester/rs_config_motd"
+#MOTD_MSG_TEST = "/tester/rs_config_motd"
+MOTD_MSG_TEST = "rs_config_motd"
 TIMESTAMP = "/tester/timestamp"
 TEST_MESSAGE = "rs_config test message"
 
-directory "/tester" do
+test_dir = if platform?('windows')
+  "C:\\tester"
+else 
+  "/tester"
+end
+
+directory "#{test_dir}" do
   action :create
 end
- 
-template "#{MOTD_MSG_TEST}" do
+
+template_path = ::File.join(test_dir, MOTD_MSG_TEST)
+template "#{template_path}" do
   source "rs_config_motd.erb"
   action :create
 end
