@@ -34,17 +34,11 @@ TIMESTAMP = "/tester/timestamp"
 TEST_MESSAGE = "rs_config test message"
 
 directory "/tester" do
-  owner "root"
-  group "root"
-  mode 0755
   action :create
 end
  
 template "#{MOTD_MSG_TEST}" do
   source "rs_config_motd.erb"
-  mode 0440
-  owner "root"
-  group "root"
   action :create
 end
 
