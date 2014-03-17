@@ -107,10 +107,11 @@ module RightlinkTester
     def get_system_log
       if platform?('windows')
         Chef::Log.info "#{Dir.glob("C:/ProgramData/RightScale/log/rs-instance*.log")}"
-        return Dir.glob("C:/ProgramData/RightScale/log/rs-instance*.log")[0]
+     return Dir.glob("C:/ProgramData/RightScale/log/rs-instance*.log").max_by { |f| File.mtime(f)}
+
+#        return Dir.glob("C:/ProgramData/RightScale/log/rs-instance*.log")[0]
       else 
-        File.exists?("/var/log/syslog") ? system_log = "/var/log/syslog" : system_log = "/var/log/messages" 
-        return system_log
+        File.exists?("/var/log/syslog") ? "/var/log/syslog" :  "/var/log/messages" 
       end
     end
 
@@ -120,12 +121,7 @@ module RightlinkTester
     # @return [bool] exists - returns true if provided line exists in system log, otherwise returns false
     #
     def check_for_the_message (line) 
-      exists = false
-      system_log = get_system_log
-      if File.readlines(system_log).grep(line).any? 
-        exists = true
-      end
-      return exists 
+      File.readlines(get_system_log).grep(line).any? 
     end
 
   end
