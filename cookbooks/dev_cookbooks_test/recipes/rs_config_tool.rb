@@ -42,6 +42,15 @@ template "#{MOTD_MSG_TEST}" do
   action :create
 end
 
+ruby_block "test" do
+block do 
+timestamp = Time.now.to_i
+      `echo "#{timestamp}" > #{TIMESTAMP}`
+      `logger "#{TEST_MESSAGE} #{timestamp}"`
+
+end
+end
+
 ruby_block "Verifies rs_config tool" do
   block do
     # before changes:
