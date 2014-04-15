@@ -14,9 +14,8 @@
 # if any tag contains spaces it should be quoted.
 #
 
-powershell_script "test PowerShell" do 
-  cwd Chef::Config[:file_cache_path]
-  code <<-EOH
+powershell "test PowerShell" do 
+  source <<-EOH
    # script 
    $rightlink_path = wmic process get ExecutablePath | Select-string "RightLinkService.exe"
    $rightlink_version = (get-command $rightlink_path | select -first 1).FileVersionInfo | % {$_.FileVersion}
