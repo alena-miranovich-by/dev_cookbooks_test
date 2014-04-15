@@ -14,66 +14,15 @@
 # if any tag contains spaces it should be quoted.
 #
 
-ruby_block "check rs_tag --query functionality" do
-  block do
-    tag1 = "user:name=tester"
-    tag2 = "test-tag with spaces"
-    tag3 = "test-tag_without_spaces"
-    tag4 = "hello:world=hello everyone"
-    unless node[:platform] == 'windows'
-      # Linux
-      rightlink_version = `cat /etc/rightscale.d/rightscale-release`
-    else 
-      # Windows
-			vers = `rs_tag --version`
-      Chef::Log.info("#{vers}")
-      if (vers.include? '6.')
-        rightlink_version = '6.'
-      else
-        rightlink_version = '5.'
-      end 
-      Chef::Log.info("#{rightlink_version}")
-    end
+powershell_script "test PowerShell" do 
+  cwd Chef::Config[:file_cache_path]
+  code <<-EOH
+   # script 
+   $rightlink_path = wmic process get ExecutablePath | Select-string "RightLinkService.exe"
+   $rightlink_version = (get-command $rightlink_path | select -first 1).FileVersionInfo | % {$_.FileVersion}
+   Write-output "RightLink version = $rightlink_version"
+   Write-Output "=== FAIL === TEST"
+   exit 100
+  EOH
 
-    if (rightlink_version.include? '6.')
-
-      expected_output = ':tags=>["user:name=tester", "test-tag with spaces", "test-tag_without_spaces", "hello:world=hello everyone"]'
-
-      result =`rs_tag --query #{tag1} "#{tag2}" #{tag3} "#{tag4}" -v`
-      puts result
-
-      if (result.include? expected_output)
-
-        Chef::Log.info("RightLink6 rs_tag works as expected. See output: \n #{result}")
-
-      else
-
-        Chef::Log.info("RightLink6 rs_tag doesn't work correctly. See output: \n #{result}")
-        fail("Actual rs_tag --query output doesn't match to expected")
-
-      end
-
-    else
-
-      # rightlink is not 6.0
-      expected_output = ':tags=>["user:name=tester", "test-tag", "with", "spaces", "test-tag_without_spaces", "hello:world=hello", "everyone"]'
-
-      result =`rs_tag --query "#{tag1} #{tag2} #{tag3} #{tag4}" -v`
-      puts result
-
-      if (result.include? expected_output)
-
-        Chef::Log.info("RightLink5 rs_tag works as expected. See output: \n #{result}")
-
-      else
-
-        Chef::Log.info("RightLink5 rs_tag doesn't work correctly. See output: \n #{result}")
-        fail("Actual rs_tag --query output doesn't match to expected.")
-
-      end
-
-    end
-
-  end
 end
-
