@@ -13,8 +13,12 @@ ruby_block "check static IP" do
     private_ipv4 = node[:cloud][:local_ipv4] 
     Chef::Log.info "public #{public_ipv4} and private #{private_ipv4}"
  
-    public_ipv4.is_a? Array : public_ipv4 = public_ipv4[0].to_s
-    private_ipv4.is_a? Array : private_ipv4 = private_ipv4[0].to_s
+    if public_ipv4.is_a? Array 
+      public_ipv4 = public_ipv4[0].to_s
+    end
+    if private_ipv4.is_a? Array 
+      private_ipv4 = private_ipv4[0].to_s
+    end
 
     public_ips = node[:cloud][:public_ips]  
     Chef::Log.info "public ips #{public_ips}"
