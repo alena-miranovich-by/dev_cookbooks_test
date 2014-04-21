@@ -1,102 +1,134 @@
 {
-  "recipes": {
-    "dev_cookbooks_test::core_env_test": "core env test",
-    "dev_cookbooks_test::soft_reboot_test": "soft_Reboot",
-    "dev_cookbooks_test::rightlink_cli_test_recipe": "Additional recipe-helper to test rightlink cli tool",
-    "dev_cookbooks_test::tag_cookbook_path_test": "???",
-    "dev_cookbooks_test::rs_config_tool": "rs_config test",
-    "dev_cookbooks_test::check_log_level": "test",
-    "dev_cookbooks_test::tag_break_point_test": "???",
-    "dev_cookbooks_test::ohai_plugin_test": "ohai",
-    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
-    "dev_cookbooks_test::rs_ohai_output_test": "rs_ohai output",
-    "dev_cookbooks_test::nat_test": "NAT test",
-    "dev_cookbooks_test::tag_persistence_test": "??",
-    "dev_cookbooks_test::rs_tag_query_test": "rs_tag",
-    "dev_cookbooks_test::proxy_client_setup": "??",
-    "dev_cookbooks_test::default": "test",
-    "dev_cookbooks_test::rightlink_cli_tools_test": "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
-  },
-  "name": "dev_cookbooks_test",
-  "groupings": {
-  },
-  "replacing": {
-  },
   "recommendations": {
   },
-  "long_description": "dev_cookbooks_test Cookbook\r\n===========================\r\nTODO: Enter the cookbook description here.\r\n\r\ne.g.\r\nThis cookbook makes your favorite breakfast sandwhich.\r\n\r\nRequirements\r\n------------\r\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\r\n\r\ne.g.\r\n#### packages\r\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\r\n\r\nAttributes\r\n----------\r\nTODO: List you cookbook attributes here.\r\n\r\ne.g.\r\n#### dev_cookbooks_test::default\r\n<table>\r\n  <tr>\r\n    <th>Key</th>\r\n    <th>Type</th>\r\n    <th>Description</th>\r\n    <th>Default</th>\r\n  </tr>\r\n  <tr>\r\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\r\n    <td>Boolean</td>\r\n    <td>whether to include bacon</td>\r\n    <td><tt>true</tt></td>\r\n  </tr>\r\n</table>\r\n\r\nUsage\r\n-----\r\n#### dev_cookbooks_test::default\r\nTODO: Write usage instructions for each cookbook.\r\n\r\ne.g.\r\nJust include `dev_cookbooks_test` in your node's `run_list`:\r\n\r\n```json\r\n{\r\n  \"name\":\"my_node\",\r\n  \"run_list\": [\r\n    \"recipe[dev_cookbooks_test]\"\r\n  ]\r\n}\r\n```\r\n\r\nContributing\r\n------------\r\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\r\n\r\ne.g.\r\n1. Fork the repository on Github\r\n2. Create a named feature branch (like `add_component_x`)\r\n3. Write you change\r\n4. Write tests for your change (if applicable)\r\n5. Run the tests, ensuring they all pass\r\n6. Submit a Pull Request using Github\r\n\r\nLicense and Authors\r\n-------------------\r\nAuthors: TODO: List authors\r\n",
+  "platforms": {
+  },
+  "maintainer": "YOUR_COMPANY_NAME",
+  "replacing": {
+  },
+  "maintainer_email": "YOUR_EMAIL",
+  "groupings": {
+  },
   "attributes": {
-    "cli_test/param": {
-      "recipes": [
-        "dev_cookbooks_test::rightlink_cli_test_recipe"
-      ],
-      "choice": [
-
-      ],
-      "display_name": "test param to provide it by json file",
-      "description": "Do not set manually this field. It should be provided by json file",
-      "type": "string",
+    "check_static_ip/network_adapter": {
       "calculated": false,
-      "required": "optional"
-    },
-    "ohai_plugin_test/expected_network_adapter": {
-      "recipes": [
-        "dev_cookbooks_test::ohai_plugin_test"
-      ],
+      "type": "string",
+      "default": "both",
+      "display_name": "Network Adapter to check static IP",
       "choice": [
         "public",
         "private",
         "both"
       ],
-      "display_name": "Network Adapters Expected",
-      "default": "both",
-      "description": "What network adaptors should we expected to find. choose both for instances with both a public and private adapters -- like one EC2.",
-      "type": "string",
+      "required": "recommended",
+      "description": " Provide network adapter to be checked: private/public or both. (both - where are both public and private adapters)",
+      "recipes": [
+        "dev_cookbooks_test::check_static_ip"
+      ]
+    },
+    "check_static_ip/test_enabled": {
       "calculated": false,
-      "required": "recommended"
+      "type": "string",
+      "default": "false",
+      "display_name": "Parameter to enable/disable the test",
+      "choice": [
+        "false",
+        "true"
+      ],
+      "required": "recommended",
+      "description": "Set true or false to enable or disalbe the test",
+      "recipes": [
+        "dev_cookbooks_test::check_static_ip"
+      ]
+    },
+    "cli_test/param": {
+      "calculated": false,
+      "type": "string",
+      "display_name": "test param to provide it by json file",
+      "choice": [
+
+      ],
+      "required": "optional",
+      "description": "Do not set manually this field. It should be provided by json file",
+      "recipes": [
+        "dev_cookbooks_test::rightlink_cli_test_recipe"
+      ]
     },
     "nat_test/nat_routes_expected": {
+      "calculated": false,
+      "type": "string",
+      "display_name": "Input NAT_routes_expected",
+      "choice": [
+
+      ],
+      "defaul": "false",
+      "required": "recommended",
+      "description": "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
       "recipes": [
         "dev_cookbooks_test::nat_test"
-      ],
-      "choice": [
-
-      ],
-      "display_name": "Input NAT_routes_expected",
-      "defaul": "false",
-      "description": "Set true or false to enable or disable NAT routes. Works only for vScale cloud (Linux and Windows).",
-      "type": "string",
+      ]
+    },
+    "ohai_plugin_test/expected_network_adapter": {
       "calculated": false,
-      "required": "recommended"
+      "type": "string",
+      "default": "both",
+      "display_name": "Network Adapters Expected",
+      "choice": [
+        "public",
+        "private",
+        "both"
+      ],
+      "required": "recommended",
+      "description": "What network adaptors should we expected to find. choose both for instances with both a public and private adapters -- like one EC2.",
+      "recipes": [
+        "dev_cookbooks_test::ohai_plugin_test"
+      ]
     },
     "ssh_test/ssh_public_key_expected": {
-      "recipes": [
-        "dev_cookbooks_test::ssh_key_test_vscale"
-      ],
+      "calculated": false,
+      "type": "string",
+      "default": "false",
+      "display_name": "Input ssh_public_key expected",
       "choice": [
 
       ],
-      "display_name": "Input ssh_public_key expected",
-      "default": "false",
+      "required": "optional",
       "description": "True/False to execute test-case. Works only for Linux OS and vScale cloud.",
-      "type": "string",
-      "calculated": false,
-      "required": "optional"
+      "recipes": [
+        "dev_cookbooks_test::ssh_key_test_vscale"
+      ]
     }
-  },
-  "platforms": {
-  },
-  "suggestions": {
-  },
-  "license": "All rights reserved",
-  "maintainer": "YOUR_COMPANY_NAME",
-  "description": "Installs/Configures dev_cookbooks_test",
-  "providing": {
   },
   "dependencies": {
   },
+  "license": "All rights reserved",
+  "name": "dev_cookbooks_test",
   "conflicting": {
   },
+  "providing": {
+  },
+  "suggestions": {
+  },
   "version": "0.2.1",
-  "maintainer_email": "YOUR_EMAIL"
+  "long_description": "dev_cookbooks_test Cookbook\r\n===========================\r\nTODO: Enter the cookbook description here.\r\n\r\ne.g.\r\nThis cookbook makes your favorite breakfast sandwhich.\r\n\r\nRequirements\r\n------------\r\nTODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.\r\n\r\ne.g.\r\n#### packages\r\n- `toaster` - dev_cookbooks_test needs toaster to brown your bagel.\r\n\r\nAttributes\r\n----------\r\nTODO: List you cookbook attributes here.\r\n\r\ne.g.\r\n#### dev_cookbooks_test::default\r\n<table>\r\n  <tr>\r\n    <th>Key</th>\r\n    <th>Type</th>\r\n    <th>Description</th>\r\n    <th>Default</th>\r\n  </tr>\r\n  <tr>\r\n    <td><tt>['dev_cookbooks_test']['bacon']</tt></td>\r\n    <td>Boolean</td>\r\n    <td>whether to include bacon</td>\r\n    <td><tt>true</tt></td>\r\n  </tr>\r\n</table>\r\n\r\nUsage\r\n-----\r\n#### dev_cookbooks_test::default\r\nTODO: Write usage instructions for each cookbook.\r\n\r\ne.g.\r\nJust include `dev_cookbooks_test` in your node's `run_list`:\r\n\r\n```json\r\n{\r\n  \"name\":\"my_node\",\r\n  \"run_list\": [\r\n    \"recipe[dev_cookbooks_test]\"\r\n  ]\r\n}\r\n```\r\n\r\nContributing\r\n------------\r\nTODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.\r\n\r\ne.g.\r\n1. Fork the repository on Github\r\n2. Create a named feature branch (like `add_component_x`)\r\n3. Write you change\r\n4. Write tests for your change (if applicable)\r\n5. Run the tests, ensuring they all pass\r\n6. Submit a Pull Request using Github\r\n\r\nLicense and Authors\r\n-------------------\r\nAuthors: TODO: List authors\r\n",
+  "description": "Installs/Configures dev_cookbooks_test",
+  "recipes": {
+    "dev_cookbooks_test::tag_break_point_test": "???",
+    "dev_cookbooks_test::rs_tag_query_test": "rs_tag",
+    "dev_cookbooks_test::check_log_level": "test",
+    "dev_cookbooks_test::proxy_client_setup": "??",
+    "dev_cookbooks_test::ohai_plugin_test": "ohai",
+    "dev_cookbooks_test::core_env_test": "core env test",
+    "dev_cookbooks_test::rs_config_tool": "rs_config test",
+    "dev_cookbooks_test::ssh_key_test_vscale": "Test to verify that the sshkey found in /var/spool/cloud/meta-data exists in /root/.ssh/authorizedkeys file",
+    "dev_cookbooks_test::rs_ohai_output_test": "rs_ohai output",
+    "dev_cookbooks_test::nat_test": "NAT test",
+    "dev_cookbooks_test::default": "test",
+    "dev_cookbooks_test::tag_persistence_test": "??",
+    "dev_cookbooks_test::soft_reboot_test": "soft_Reboot",
+    "dev_cookbooks_test::check_static_ip": "check static IP",
+    "dev_cookbooks_test::tag_cookbook_path_test": "???",
+    "dev_cookbooks_test::rightlink_cli_test_recipe": "Additional recipe-helper to test rightlink cli tool",
+    "dev_cookbooks_test::rightlink_cli_tools_test": "Test to verify RightLink CLI tools available options. Only for RL 5.9.5+"
+  }
 }

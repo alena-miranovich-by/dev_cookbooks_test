@@ -22,7 +22,7 @@ recipe "dev_cookbooks_test::tag_break_point_test", "???"
 recipe "dev_cookbooks_test::tag_cookbook_path_test", "???"
 recipe "dev_cookbooks_test::tag_persistence_test", "??"
 recipe "dev_cookbooks_test::core_env_test", "core env test"
-
+recipe "dev_cookbooks_test::check_static_ip", "check static IP"
 
 attribute "ohai_plugin_test/expected_network_adapter",
   :display_name => "Network Adapters Expected",
@@ -51,4 +51,21 @@ attribute "cli_test/param",
   :display_name => "test param to provide it by json file",
   :description => "Do not set manually this field. It should be provided by json file",
   :recipes => ["dev_cookbooks_test::rightlink_cli_test_recipe" ]
+
+
+attribute "check_static_ip/network_adapter",
+  :display_name => "Network Adapter to check static IP",
+  :description => " Provide network adapter to be checked: private/public or both. (both - where are both public and private adapters)",
+  :required => "recommended",
+  :default => "both",
+  :choice => [ "public","private","both" ],
+  :recipes => [ "dev_cookbooks_test::check_static_ip" ]
+
+attribute "check_static_ip/test_enabled",
+  :display_name => "Parameter to enable/disable the test",
+  :description => "Set true or false to enable or disalbe the test",
+  :required => "recommended",
+  :default => "false",
+  :choice => [ "false", "true"],
+  :recipes => [ "dev_cookbooks_test::check_static_ip" ]
 
