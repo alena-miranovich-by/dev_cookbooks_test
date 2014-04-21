@@ -34,7 +34,7 @@ for i in 0..1
     case network_adapter
     when 'private'
      if private_ipv4 == ip
-       Chef::Lof.info "#{ip} frommetadata is the same as current privaate IP"
+       Chef::Log.info "#{ip} frommetadata is the same as current privaate IP"
      elsif private_ips
        if private_ips.include?(ip)
          Chef::Log.info "ip #{ip} from metadata has been successfully set as private static IP"
@@ -45,7 +45,7 @@ for i in 0..1
 
     when 'public' 
       if public_ipv4 == ip
-       Chef::Lof.info "#{ip} frommetadata is the same as current public IP"
+       Chef::Log.info "#{ip} frommetadata is the same as current public IP"
      elsif public_ips
        if public_ips.include?(ip)
          Chef::Log.info "ip #{ip} from metadata has been successfully set as public static IP"
@@ -64,7 +64,7 @@ for i in 0..1
        else 
          # check if it is private
          if private_ipv4 == ip
-           Chef::Lof.info "#{ip} frommetadata is the same as current privaate IP"
+           Chef::Log.info "#{ip} frommetadata is the same as current privaate IP"
          elsif private_ips
            if private_ips.include?(ip)
              Chef::Log.info "ip #{ip} from metadata has been successfully set as private static IP"
