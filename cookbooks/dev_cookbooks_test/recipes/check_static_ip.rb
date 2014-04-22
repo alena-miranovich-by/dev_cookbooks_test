@@ -34,30 +34,30 @@ ruby_block "check static IP" do
     end
 
     case network_adapter
-       
+
     when 'private'
-      if ENV.key?("RS_IP0_ADDR")
-        ip = ENV["RS_IP0_ADDR"] 
+      if ENV.key?(IP0_ADDR)
+        ip = ENV[IP0_ADDR]
         if is_private? ip
           if private_ipv4 == ip
             Chef::Log.info "=== PASS === Current Private IP is the same as in meta-data."
           elsif private_ips
             if private_ips.include?(ip)
               Chef::Log.info "=== WARN === Current Private IP is '#{private_ipv4}'. IP from metadata ('#{ip}') is not set as current, but it exists in private_ips array: #{private_ips}."
-            else 
+            else
               raise "=== FAIL === Current Private IP ('#{private_ipv4}') is not the same as static IP from meta-data ('#{ip}')."
             end
           end
-        else 
+        else
           raise "=== FAIL === ip from meta-data is not private. Please make sure that input for test is provided correctly"
         end
-      else 
-        raise "=== FAIL === there is no RS_IP0_ADDR key in meta-data"
+      else
+        raise "=== FAIL === there is no #{IP0_ADDR} key in meta-data"
       end
-        
+
      when 'public'
-       if ENV.key?("RS_IP0_ADDR")
-         ip = ENV["RS_IP0_ADDR"]
+       if ENV.key?(IP0_ADDR)
+         ip = ENV[IP0_ADDR]
          unless is_private? ip
            if public_ipv4 == ip
              Chef::Log.info "=== PASS === Current Public IP is the same as in meta-data."
@@ -68,18 +68,18 @@ ruby_block "check static IP" do
                raise "=== FAIL === Current Public IP ('#{public_ipv4}') is not the same as static IP from meta-data ('#{ip}')."
              end
            end
-         else 
+         else
            raise "=== FAIL === ip from meta-data is not public. Please make sure that input for test is provided correctly."
          end
-       else 
-         raise "=== FAIL === there is no RS_IP0_ADDR key in meta-data"
+       else
+         raise "=== FAIL === there is no #{IP0_ADDR} key in meta-data"
        end
- 
-     when 'both'
-       if ENV.key?("RS_IP0_ADDR") || ENV.key?("RS_IP1_ADDR")
-         for i in 0..1
-           key = "RS_IP"+i.to_s+"_ADDR"
-           ip = ENV[key]
+
+ when 'both'
+     Chef::Log.info "both bloc"
+       if (ENV.key?(IP0_ADDR) && ENV.key?(IP1_ADDR))
+         for i in [ IP0_ADDR, IP1_ADDR ]
+           ip = ENV[i]
            if is_private? ip
            # ip is private
              if private_ipv4 == ip
@@ -105,10 +105,12 @@ ruby_block "check static IP" do
              end
            end
          end
-       else 
-         raise "=== FAIL=== there are no RS_IP0_ADDR and RS_IP1_ADDR values in meta-data"
+       else
+         raise "=== FAIL=== there are no both static IPs: ip0 = '#{ENV[IP0_ADDR]}' and  ip1 = '#{ENV[IP1_ADDR]}' values in meta-data"
        end
     end
+
+
 
     Chef::Log.info "==================== check_static_ip recipe finished ===================="
  
