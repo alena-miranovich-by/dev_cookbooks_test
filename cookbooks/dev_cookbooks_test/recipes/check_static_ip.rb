@@ -33,7 +33,6 @@ ruby_block "check static IP" do
     else
       require '/var/spool/cloud/meta-data'
     end
-    `cat /var/spool/cloud/meta-data.rb` 
     for i in 0..1
       key = "RS_IP"+i.to_s+"_ADDR"
       if ENV.key?(key)
@@ -43,6 +42,7 @@ ruby_block "check static IP" do
 
         case network_adapter
         when 'private'       
+Chef::Log.info "private block"
           if private_ipv4 == ip
             Chef::Log.info "=== PASS === IP from metadata is '#{ip}'. Current private IP is the same: '#{private_ipv4}'."
           elsif private_ips
@@ -54,6 +54,7 @@ ruby_block "check static IP" do
           end
 
         when 'public' 
+Chef::Log.info "public block"
           if public_ipv4 == ip
             Chef::Log.info "=== PASS === IP from metadata is '#{ip}'. Current public IP is the same: '#{public_ipv4}'."
           elsif public_ips
@@ -65,6 +66,7 @@ ruby_block "check static IP" do
           end
 
         when 'both' 
+Chef::Log.info "both block"
           if public_ipv4 == ip
             Chef::Log.info "=== PASS public === IP from metadata is '#{ip}'. Current public IP is the same: '#{public_ipv4}'."
           elsif public_ips
