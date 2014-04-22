@@ -81,6 +81,8 @@ ruby_block "check static IP" do
             end
           end
         end
+      else 
+        raise "=== FAIL === '#{key}' does not exist in metadata file. Please check provided user- and metadata."
       end
     end
 
