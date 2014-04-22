@@ -45,7 +45,7 @@ ruby_block "check static IP" do
         case network_adapter
         
         when 'private'
-          if ip.is_private?
+          if is_private? ip
             if private_ipv4 == ip
               Chef::Log.info "=== PASS === Current Private IP is the same as in meta-data."
             elsif private_ips
@@ -60,7 +60,7 @@ ruby_block "check static IP" do
           end
         
         when 'public'
-          unless ip.is_private?
+          unless is_private? ip
             if public_ipv4 == ip
               Chef::Log.info "=== PASS === Current Public IP is the same as in meta-data."
             elsif public_ips
@@ -75,7 +75,7 @@ ruby_block "check static IP" do
           end
  
         when 'both'
-          if ip.is_private?
+          if is_private? ip
           # ip is private
             if private_ipv4 == ip
               Chef::Log.info "=== PASS === Current Private IP is the same as in meta-data."
