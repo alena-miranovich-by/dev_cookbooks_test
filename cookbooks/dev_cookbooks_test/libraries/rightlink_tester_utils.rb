@@ -124,6 +124,25 @@ module RightlinkTester
       File.readlines(get_system_log).grep(line).any? 
     end
 
+
+    def is_private? (ip)
+      is_private = false
+      if ip.is_a? Array
+        ip = ip[0].to_s
+      end
+
+      if ip =~ /^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/
+        private_regexp = /\A(10\.|192\.168\.|172\.1[6789]\.|172\.2.\.|172\.3[01]\.)/
+        # check if provided ip is private
+        if ip =~ private_regexp
+          is_private = true
+        end
+      else
+        fail("Provided IP address is not valid: #{ip}")
+      end
+     is_private
+    end
+
   end
 end
 
