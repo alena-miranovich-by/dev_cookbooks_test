@@ -33,7 +33,7 @@ ruby_block "check static IP" do
     else
       require '/var/spool/cloud/meta-data'
     end
- 
+    `cat /var/spool/cloud/meta-data.rb` 
     for i in 0..1
       key = "RS_IP"+i.to_s+"_ADDR"
       if ENV.key?(key)
