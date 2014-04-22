@@ -4,6 +4,11 @@ class Chef::Resource::RubyBlock
   include RightlinkTester::Utils
 end
 
+IP0_ADDR = "RS_IP0_ADDR"
+IP1_ADDR = "RS_IP1_ADDR"
+
+
+
 network_adapter = node[:check_static_ip][:network_adapter]
 test_state = node[:check_static_ip][:test_enabled]
 
