@@ -4,8 +4,12 @@ class Chef::Resource::RubyBlock
   include RightlinkTester::Utils
 end
 
+
+
 network_adapter = node[:check_static_ip][:network_adapter]
 test_state = node[:check_static_ip][:test_enabled]
+
+Chef::Log.info "==================== check_static_ip recipe started ===================="
 
 ruby_block "check static IP" do 
   block do
@@ -81,10 +85,9 @@ ruby_block "check static IP" do
             end
           end
         end
-      else 
-        raise "=== FAIL === '#{key}' does not exist in metadata file. Please check provided user- and metadata."
       end
     end
+    Chef::Log.info "==================== check_static_ip recipe finished ===================="
 
   end
   not_if { test_state == 'false' || node[:cloud][:provider] != 'vsphere' }
