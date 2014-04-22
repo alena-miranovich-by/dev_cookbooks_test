@@ -48,9 +48,9 @@ ruby_block "check static IP" do
           elsif private_ips
             if private_ips.include?(ip)
               Chef::Log.info "=== WARN === Current private IP is '#{private_ipv4}'. IP from metadata is '#{ip}' which is not set as current, but it exists in private_ips array: #{private_ips}."
+            else 
+              raise "=== FAIL === Current private IP ('#{private_ipv4}') is not matched to static IP from metadata ('#{ip}'). Please check network settings."
             end
-          else 
-            raise "=== FAIL === Current private IP ('#{private_ipv4}') is not matched to static IP from metadata ('#{ip}'). Please check network settings."
           end
 
         when 'public' 
@@ -59,9 +59,9 @@ ruby_block "check static IP" do
           elsif public_ips
             if public_ips.include?(ip)
               Chef::Log.info "=== WARN === Current public IP is '#{public_ipv4}'. IP from metadata is '#{ip}' which is not set as current public IP, but it exists in public_ips array: #{public_ips}."
+            else   
+              raise "=== FAIL === Current public IP ('#{public_ipv4}') is not matched to static IP from metadata ('#{ip}'). Please check network settings."
             end
-          else   
-            raise "=== FAIL === Current public IP ('#{public_ipv4}') is not matched to static IP from metadata ('#{ip}'). Please check network settings."
           end
 
         when 'both' 
@@ -70,19 +70,19 @@ ruby_block "check static IP" do
           elsif public_ips
             if public_ips.include?(ip)
               Chef::Log.info "=== WARN public === Current public IP is '#{public_ipv4}'. IP from metadata is '#{ip}' which is not set as current public IP, but it exists in public_ips array: #{public_ips}."
-            end
-          else 
-            # check if it is private
-            if private_ipv4 == ip
-              Chef::Log.info "=== PASS private === IP from metadata is '#{ip}'. Current private IP is the same: '#{private_ipv4}'."
-            elsif private_ips
-              if private_ips.include?(ip)
-                Chef::Log.info "=== WARN private === Current private IP is '#{private_ipv4}'). IP from metadata is '#{ip}' which is not set as current private IP, but it exists in private_ips array: #{private_ips}."
-              end
             else 
-              raise "=== FAIL === Current public ('#{public_ipv4}') and private ('#{private_ipv4}') IPs are not matched to static IPs from metadata. Please check network settings."
-            end
-          end
+              # check if it is private
+              if private_ipv4 == ip
+                Chef::Log.info "=== PASS private === IP from metadata is '#{ip}'. Current private IP is the same: '#{private_ipv4}'."
+              elsif private_ips
+                if private_ips.include?(ip)
+                  Chef::Log.info "=== WARN private === Current private IP is '#{private_ipv4}'). IP from metadata is '#{ip}' which is not set as current private IP, but it exists in private_ips array: #{private_ips}."
+                else 
+                  raise "=== FAIL === Current public ('#{public_ipv4}') and private ('#{private_ipv4}') IPs are not matched to static IPs from metadata. Please check network settings."
+                end
+              end
+            end #
+          end #
         end
       end
     end
@@ -91,4 +91,3 @@ ruby_block "check static IP" do
   end
   not_if { test_state == 'false' || node[:cloud][:provider] != 'vsphere' || get_rightlink_version.match('^6.0.[0-1]$') }
 end 
-
