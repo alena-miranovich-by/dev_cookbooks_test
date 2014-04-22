@@ -90,6 +90,6 @@ ruby_block "check static IP" do
     Chef::Log.info "==================== check_static_ip recipe finished ===================="
 
   end
-  not_if { test_state == 'false' || node[:cloud][:provider] != 'vsphere' !get_rightlink_version.match('^6.0.4$') }
+  not_if { test_state == 'false' || node[:cloud][:provider] != 'vsphere' || get_rightlink_version.match('^6.0.[0-2]$') }
 end 
 
