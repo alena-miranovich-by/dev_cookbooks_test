@@ -25,9 +25,8 @@ ruby_block "check static IP" do
     end
 
     public_ips = node[:cloud][:public_ips]  
-    Chef::Log.info "public ips #{public_ips}"
     private_ips = node[:cloud][:private_ips]
-    Chef::Log.info "private ips #{private_ips}"
+    Chef::Log.info "private ips #{private_ips} and public ips #{public_ips}."
 
     if platform?('windows')
       load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
