@@ -157,6 +157,7 @@ def get_instance_public_ip
   if public_ipv4.is_a? Array
     public_ipv4 = public_ipv4[0].to_s
   end
+  return public_ipv4
 end
 
 def get_instance_private_ip 
@@ -164,6 +165,7 @@ def get_instance_private_ip
   if private_ipv4.is_a? Array
     private_ipv4 = private_ipv4[0].to_s
   end
+  return private_ipv4
 end
 
 def check_ip_to_be_expected (actual_ip, expected_ip)
