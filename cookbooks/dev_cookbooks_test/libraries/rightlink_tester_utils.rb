@@ -143,6 +143,51 @@ module RightlinkTester
      is_private
     end
 
+
+    def load_metadata
+    if platform?('windows')
+      load File.join(::Dir::COMMON_APPDATA, "Rightscale", "spool", "cloud", "meta-data.rb")
+    else
+      require '/var/spool/cloud/meta-data'
+    end
+    end
+
+def get_instance_public_ip
+  public_ipv4 = node[:cloud][:public_ipv4]
+  if public_ipv4.is_a? Array
+    public_ipv4 = public_ipv4[0].to_s
+  end
+end
+
+def get_instance_private_ip 
+  private_ipv4 = node[:cloud][:local_ipv4]
+  if private_ipv4.is_a? Array
+    private_ipv4 = private_ipv4[0].to_s
+  end
+end
+
+def check_ip_to_be_expected (actual_ip, expected_ip)
+  if actual_ip == expected_ip
+    Chef::Log.info "=== PASS === Current IP ('#{actual_ip}') is the same as expected IP ('#{expected_ip}')."
+    return
+  end
+  ips_array = if is_private? expected_ip
+     private_ips = node[:cloud][:private_ips]
+  else
+     public_ips = node[:cloud][:public_ips]
+  end
+
+  if (ips_array && !ips_array.empty?)
+    if ips_array.include?(expected_ip)
+      Chef::Log.warn "=== WARN === expected IP '#{expected_ip}' is not current IP '#{actual_ip}', but it exists in array of instance IPs: '#{ips_array.inspect}'."
+    else
+      raise "=== FAIL === current instance IP ('#{actual_ip}') is not the same as expected IP '#{expected_ip}'."
+    end
+  else
+    raise " === FAIL === the array of instance IPs is empty: '#{ips_array.inspect}'."
+  end
+end
+
   end
 end
 
