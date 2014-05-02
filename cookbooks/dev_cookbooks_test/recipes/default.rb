@@ -21,7 +21,7 @@ powershell "test PowerShell" do
    $rightlink_version = (get-command $rightlink_path | select -first 1).FileVersionInfo | % {$_.FileVersion}
    Write-output "RightLink version = $rightlink_version"
    Write-Output "=== FAIL === TEST"
-   import-module "C:\Program Files (x86)\RightScale\RightLink\\sandbox\\ruby\lib\\ruby\gems\\1.9.1\gems\\right_link-6.0.0\lib\\chef\windows\\bin\ChefNodeCmdlet.dll"
+   import-module "C:\Program Files (x86)\RightScale\RightLink\\sandbox\\ruby\lib\\ruby\gems\\1.9.1\gems\\right_link-6.0.0\lib\\chef\windows\\bin\\ChefNodeCmdlet.dll"
    get-chefnode -Path ""
    help Get-ChefNode
 
