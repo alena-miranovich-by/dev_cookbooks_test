@@ -24,6 +24,15 @@ powershell "test PowerShell" do
    import-module "C:\\Program\ Files\ (x86)\\RightScale\\RightLink\\sandbox\\ruby\\lib\\ruby\\gems\\1.9.1\\gems\\right_link-6.0.3\\lib\\chef\\windows\\bin\\ChefNodeCmdlet.dll"
    get-chefnode -Path ""
    help Get-ChefNode
+   $kernelOS = get-chefnode kernel, os
+   Write-Output "$kernelOS"
+   set-chefnode my_str "hello world"
+   set-chefnode my_bool -BooleanValue $TRUE
+   help Get-CurrentResource
+   help Set-NewResource
+   help Get-NewResource
+   help Set-CurrentResoutce
+   help Get-NextAction
 
   EOH
 
