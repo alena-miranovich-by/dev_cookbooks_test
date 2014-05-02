@@ -31,7 +31,7 @@ powershell "test PowerShell" do
    help Get-CurrentResource
    help Set-NewResource
    help Get-NewResource
-   help Set-CurrentResoutce
+   help Set-CurrentResource
    help Get-NextAction
 
   EOH
